@@ -32,12 +32,6 @@ function Map({className, offers, activeOffer}: MapProps): JSX.Element {
 
   useEffect(() => {
     if (map) {
-      map.eachLayer((layer) => {
-        if (layer instanceof leaflet.Marker) {
-          map.removeLayer(layer);
-        }
-      });
-
       offers.forEach((offer) => {
         leaflet
           .marker({
