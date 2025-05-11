@@ -15,7 +15,6 @@ type MapProps = {
 function Map({className, offers, activeOffer}: MapProps): JSX.Element {
   const mapRef = useRef(null);
   const city = offers.length > 0 ? offers[0].city : null;
-
   const map = useMap({mapRef, city});
 
   const defaultCustomIcon = leaflet.icon({
@@ -32,6 +31,14 @@ function Map({className, offers, activeOffer}: MapProps): JSX.Element {
 
   useEffect(() => {
     if (map) {
+      map.eachLayer((layer) => {
+        if (layer instanceof leaflet.Marker) {
+          map.removeLayer(layer);
+        }
+      });
+
+      map.setView([offers[0].city.location.latitude, offers[0].city.location.longitude], offers[0].city.location.zoom);
+      console.log(map.options.center);
       offers.forEach((offer) => {
         leaflet
           .marker({

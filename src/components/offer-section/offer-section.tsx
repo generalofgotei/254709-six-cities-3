@@ -3,16 +3,18 @@ import Card from '../card/card';
 
 type OfferSectionProps = {
   offers: OffersType;
+  activeCity: string;
   onActiveOfferChange: (offer?: OfferType) => void;
 };
 
 const OfferSection = ({
   offers,
   onActiveOfferChange,
+  activeCity
 }: OfferSectionProps): JSX.Element => (
   <section className="cities__places places">
     <h2 className="visually-hidden">Places</h2>
-    <b className="places__found">{offers.length} places to stay in Amsterdam</b>
+    <b className="places__found">{offers.length} places to stay in {activeCity}</b>
     <form className="places__sorting" action="#" method="get">
       <span className="places__sorting-caption">Sort by</span>
       <span className="places__sorting-type" tabIndex={0}>
