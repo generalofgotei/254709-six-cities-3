@@ -1,7 +1,7 @@
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { AppRoute, AuthorizationStatus } from '../../const';
-import { OfferType, OffersType } from '../../types/offers';
+import { OfferType } from '../../types/offers';
 import { ReviewsType } from '../../types/reviews';
 import Layout from '../layout/layout';
 import Main from '../../pages/main/main';
@@ -16,13 +16,11 @@ import { useAppSelector } from '../../store';
 
 type AppProps = {
   authorizationStatus: (typeof AuthorizationStatus)[keyof typeof AuthorizationStatus];
-  offers: OffersType;
   reviews: ReviewsType;
 };
 
 const App = ({
   authorizationStatus,
-  offers,
   reviews,
 }: AppProps): JSX.Element => {
   const [activeOffer, setActiveOffer] = useState<Nullable<OfferType>>(null);
@@ -30,7 +28,7 @@ const App = ({
   const handleActiveOfferChange = (offer?: OfferType) => {
     setActiveOffer(offer || null);
   };
-
+  const offers = useAppSelector((state) => state.offers);
   const activeCity = useAppSelector((state) => state.city);
   const activeOffers = offers.filter((offer) => offer.city.name === activeCity);
 
