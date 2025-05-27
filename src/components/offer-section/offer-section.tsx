@@ -10,6 +10,20 @@ type OfferSectionProps = {
   onActiveOfferChange: (offer?: OfferType) => void;
 };
 
+const sortOffers = (offers: OffersType, sortingType: string): OffersType => {
+  switch (sortingType) {
+    case 'Price: low to high':
+      return [...offers].sort((a, b) => a.price - b.price);
+    case 'Price: high to low':
+      return [...offers].sort((a, b) => b.price - a.price);
+    case 'Top rated first':
+      return [...offers].sort((a, b) => b.rating - a.rating);
+    case 'Popular':
+    default:
+      return offers;
+  }
+};
+
 const OfferSection = ({
   onActiveOfferChange,
 }: OfferSectionProps): JSX.Element => {
@@ -22,24 +36,9 @@ const OfferSection = ({
   };
 
   const activeCity = useAppSelector(offersSelectors.city);
-  const activeOffers = useAppSelector(offersSelectors.offers).filter((offer) => offer.city.name === activeCity);
-
-  const sortOffers = (
-    offers: OffersType,
-    sortingType: string
-  ): OffersType => {
-    switch (sortingType) {
-      case 'Price: low to high':
-        return [...offers].sort((a, b) => a.price - b.price);
-      case 'Price: high to low':
-        return [...offers].sort((a, b) => b.price - a.price);
-      case 'Top rated first':
-        return [...offers].sort((a, b) => b.rating - a.rating);
-      case 'Popular':
-      default:
-        return offers;
-    }
-  };
+  const activeOffers = useAppSelector(offersSelectors.offers).filter(
+    (offer) => offer.city.name === activeCity
+  );
 
   const sortedOffers = sortOffers(activeOffers, activeSorting);
 
