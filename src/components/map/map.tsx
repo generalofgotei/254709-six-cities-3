@@ -2,7 +2,8 @@ import {useRef, useEffect} from 'react';
 import leaflet from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import useMap from './useMap.ts';
-import { OffersType, OfferType } from '../../types/offers.ts';
+import { OffersType } from '../../types/offers.ts';
+import { OfferType } from '../../types/offers.ts';
 import { URL_MARKER_CURRENT, URL_MARKER_DEFAULT } from '../../const.ts';
 
 type MapProps = {
