@@ -1,7 +1,7 @@
 import ReviewItem from '../review-item/review-item';
 import ReviewForm from '../review-form/review-form';
 import { AuthorizationStatus } from '../../const';
-import { ReviewsType } from '../../mocks/reviews';
+import { ReviewsType } from '../../types/reviews';
 
 type ReviewListProps = {
   authorizationStatus: (typeof AuthorizationStatus)[keyof typeof AuthorizationStatus];
