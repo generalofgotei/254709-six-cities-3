@@ -1,5 +1,5 @@
 import Card from '../../components/card/card';
-import { OffersType, OfferType } from '../../mocks/offers';
+import { OffersType, OfferType } from '../../types/offers';
 
 type NearPlacesProps ={
   offers: OffersType;

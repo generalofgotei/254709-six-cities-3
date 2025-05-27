@@ -1,8 +1,8 @@
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { AppRoute, AuthorizationStatus } from '../../const';
-import { OffersType, OfferType } from '../../mocks/offers';
-import { ReviewsType } from '../../mocks/reviews';
+import { OfferType, OffersType } from '../../types/offers';
+import { ReviewsType } from '../../types/reviews';
 import Layout from '../layout/layout';
 import Main from '../../pages/main/main';
 import Login from '../../pages/login/login';
@@ -12,7 +12,7 @@ import NotFound from '../../pages/not-found/not-found';
 import PrivateRoute from '../private-route/private-route';
 import { Nullable } from 'vitest';
 import { useState } from 'react';
-import { Cities } from '../../const';
+import { useAppSelector } from '../../store';
 
 type AppProps = {
   authorizationStatus: (typeof AuthorizationStatus)[keyof typeof AuthorizationStatus];
@@ -26,15 +26,12 @@ const App = ({
   reviews,
 }: AppProps): JSX.Element => {
   const [activeOffer, setActiveOffer] = useState<Nullable<OfferType>>(null);
-  const [activeCity, setActiveCity] = useState('Paris');
+
   const handleActiveOfferChange = (offer?: OfferType) => {
     setActiveOffer(offer || null);
   };
 
-  const handleActiveCityChange = (city: typeof Cities[number]) => {
-    setActiveCity(city);
-  };
-
+  const activeCity = useAppSelector((state) => state.city);
   const activeOffers = offers.filter((offer) => offer.city.name === activeCity);
 
   return (
@@ -51,9 +48,7 @@ const App = ({
                 <Main
                   offers={activeOffers}
                   activeOffer={activeOffer}
-                  activeCity={activeCity}
                   handleActiveOfferChange={handleActiveOfferChange}
-                  handleActiveCityChange={handleActiveCityChange}
                 />
               }
             />

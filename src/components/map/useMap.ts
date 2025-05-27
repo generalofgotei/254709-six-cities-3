@@ -1,6 +1,6 @@
 import {useEffect, useState, useRef} from 'react';
 import leaflet from 'leaflet';
-import { OfferType } from '../../mocks/offers';
+import { OfferType } from '../../types/offers';
 
 type UseMapType = {
   mapRef: React.RefObject<HTMLElement>;
@@ -10,7 +10,7 @@ type UseMapType = {
 function useMap({mapRef, city}: UseMapType) {
   const [map, setMap] = useState<leaflet.Map | null>(null);
   const isRenderedRef = useRef(false);
-  console.log(city);
+
   useEffect(() => {
     if (mapRef.current !== null && !isRenderedRef.current && city) {
       const instance = leaflet.map(mapRef.current, {

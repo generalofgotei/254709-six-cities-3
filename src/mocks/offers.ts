@@ -1,29 +1,4 @@
-type Location = {
-  latitude: number;
-  longitude: number;
-  zoom: number;
-};
-
-type City = {
-  name: string;
-  location: Location;
-};
-
-export type OfferType = {
-  id: string;
-  title: string;
-  type: string;
-  price: number;
-  previewImage: string;
-  city: City;
-  location: Location;
-  isFavorite: boolean;
-  isPremium: boolean;
-  rating: number;
-};
-
-export type OffersType = OfferType[];
-
+import { OffersType } from '../types/offers';
 export const offers: OffersType = [
   {
     id: 'e38bb494-5b42-432b-a9e9-09e74506ab31',
@@ -389,7 +364,7 @@ export const offers: OffersType = [
       longitude: 2.350499,
       zoom: 16,
     },
-    isFavorite: false,
+    isFavorite: true,
     isPremium: true,
     rating: 4.7,
   },
@@ -412,7 +387,7 @@ export const offers: OffersType = [
       longitude: 2.374499,
       zoom: 16,
     },
-    isFavorite: false,
+    isFavorite: true,
     isPremium: false,
     rating: 4.2,
   },
@@ -504,7 +479,7 @@ export const offers: OffersType = [
       longitude: 6.961974,
       zoom: 16,
     },
-    isFavorite: false,
+    isFavorite: true,
     isPremium: false,
     rating: 2.7,
   },
@@ -665,7 +640,7 @@ export const offers: OffersType = [
       longitude: 6.976974,
       zoom: 16,
     },
-    isFavorite: false,
+    isFavorite: true,
     isPremium: false,
     rating: 4.7,
   },
@@ -2114,7 +2089,7 @@ export const offers: OffersType = [
       longitude: 9.994654,
       zoom: 16,
     },
-    isFavorite: false,
+    isFavorite: true,
     isPremium: true,
     rating: 1.7,
   },
@@ -2160,7 +2135,7 @@ export const offers: OffersType = [
       longitude: 10.025654000000001,
       zoom: 16,
     },
-    isFavorite: false,
+    isFavorite: true,
     isPremium: true,
     rating: 4.8,
   },
@@ -2689,8 +2664,8 @@ export const offers: OffersType = [
       longitude: 6.7853140000000005,
       zoom: 16,
     },
-    isFavorite: false,
-    isPremium: false,
+    isFavorite: true,
+    isPremium: true,
     rating: 2.5,
   },
   {
@@ -2782,7 +2757,7 @@ export const offers: OffersType = [
       zoom: 16,
     },
     isFavorite: false,
-    isPremium: false,
+    isPremium: true,
     rating: 3,
   },
 ];

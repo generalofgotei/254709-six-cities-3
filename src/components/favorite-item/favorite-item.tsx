@@ -1,4 +1,4 @@
-import { OffersType } from '../../mocks/offers';
+import { OffersType } from '../../types/offers';
 import Card from '../card/card';
 
 

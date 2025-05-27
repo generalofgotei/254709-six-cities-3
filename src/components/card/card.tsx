@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../../const';
 import { calculateRating } from '../../utils';
-import { OfferType } from '../../mocks/offers';
+import { OfferType } from '../../types/offers';
 import cn from 'classnames';
 
 type CardProps = {
@@ -25,7 +25,7 @@ const Card = ({
     title,
     type,
   } = offer;
-
+  // Вспомнить на 100% логику работы кнопок
   const handleMouseOn = () => handleHover && handleHover(offer);
   const handleMouseOff = () => handleHover && handleHover();
 
