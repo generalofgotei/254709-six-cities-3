@@ -1,8 +1,9 @@
 import { OffersType } from './offers';
 import type {store} from '../store';
+import { Cities } from '../const';
 
 export type OffersState = {
-  city: string;
+  city: (typeof Cities)[number];
   offers: OffersType;
 }
 

@@ -2,6 +2,7 @@ import { OfferType, OffersType } from '../../types/offers';
 import Card from '../card/card';
 import { useAppSelector } from '../../store';
 import { SortingOptions } from '../../const';
+import { selectActiveOffers, selectCity } from '../../selectors/offers';
 import { useState } from 'react';
 import cn from 'classnames';
 
@@ -20,10 +21,8 @@ const OfferSection = ({
     handleSortingListToggle();
   };
 
-  const activeCity = useAppSelector((state) => state.city);
-  const activeOffers = useAppSelector((state) => state.offers).filter(
-    (offer) => offer.city.name === activeCity
-  );
+  const activeCity = useAppSelector(selectCity);
+  const activeOffers = useAppSelector(selectActiveOffers);
 
   const sortOffers = (
     offers: OffersType,
