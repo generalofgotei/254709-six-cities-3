@@ -1,48 +1,88 @@
 import { OfferType, OffersType } from '../../types/offers';
 import Card from '../card/card';
 import { useAppSelector } from '../../store';
+import { SortingOptions } from '../../const';
+import { useState } from 'react';
+import cn from 'classnames';
 
 type OfferSectionProps = {
-  offers: OffersType;
   onActiveOfferChange: (offer?: OfferType) => void;
 };
 
 const OfferSection = ({
-  offers,
   onActiveOfferChange,
 }: OfferSectionProps): JSX.Element => {
+  const [activeSorting, setActiveSorting] = useState<string>('Popular');
+  const [isSortingListOpen, setSortingListOpen] = useState(false);
+  const handleSortingListToggle = () => setSortingListOpen(!isSortingListOpen);
+  const handleSortingChange = (sorting: string) => {
+    setActiveSorting(sorting);
+    handleSortingListToggle();
+  };
+
   const activeCity = useAppSelector((state) => state.city);
+  const activeOffers = useAppSelector((state) => state.offers).filter(
+    (offer) => offer.city.name === activeCity
+  );
+
+  const sortOffers = (
+    offers: OffersType,
+    sortingType: string
+  ): OffersType => {
+    switch (sortingType) {
+      case 'Price: low to high':
+        return [...offers].sort((a, b) => a.price - b.price);
+      case 'Price: high to low':
+        return [...offers].sort((a, b) => b.price - a.price);
+      case 'Top rated first':
+        return [...offers].sort((a, b) => b.rating - a.rating);
+      case 'Popular':
+      default:
+        return offers;
+    }
+  };
+
+  const sortedOffers = sortOffers(activeOffers, activeSorting);
+
   return (
     <section className="cities__places places">
       <h2 className="visually-hidden">Places</h2>
       <b className="places__found">
-        {offers.length} places to stay in {activeCity}
+        {activeOffers.length} places to stay in {activeCity}
       </b>
       <form className="places__sorting" action="#" method="get">
         <span className="places__sorting-caption">Sort by</span>
-        <span className="places__sorting-type" tabIndex={0}>
-          Popular
+        <span
+          className="places__sorting-type"
+          tabIndex={0}
+          onClick={() => handleSortingListToggle()}
+        >
+          {activeSorting}
           <svg className="places__sorting-arrow" width="7" height="4">
             <use xlinkHref="#icon-arrow-select"></use>
           </svg>
         </span>
-        <ul className="places__options places__options--custom places__options--opened">
-          <li className="places__option places__option--active" tabIndex={0}>
-            Popular
-          </li>
-          <li className="places__option" tabIndex={0}>
-            Price: low to high
-          </li>
-          <li className="places__option" tabIndex={0}>
-            Price: high to low
-          </li>
-          <li className="places__option" tabIndex={0}>
-            Top rated first
-          </li>
+        <ul
+          className={cn('places__options', 'places__options--custom', {
+            'places__options--opened': isSortingListOpen,
+          })}
+        >
+          {SortingOptions.map((option) => (
+            <li
+              key={option}
+              className={cn('places__option', {
+                'places__option--active': activeSorting === option,
+              })}
+              tabIndex={0}
+              onClick={() => handleSortingChange(option)}
+            >
+              {option}
+            </li>
+          ))}
         </ul>
       </form>
       <div className="cities__places-list places__list tabs__content">
-        {offers.map((offer) => (
+        {sortedOffers.map((offer) => (
           <Card
             key={offer.id}
             offer={offer}

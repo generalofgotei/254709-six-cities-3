@@ -1,13 +1,8 @@
 import Footer from '../../components/footer/footer';
 import { FavoriteList } from '../../components/favoriteList/favorite-list';
 import { Helmet } from 'react-helmet-async';
-import { OffersType } from '../../types/offers';
 
-type FavoritesProps = {
-  favoriteOffers: OffersType;
-};
-
-const Favorites = ({ favoriteOffers }: FavoritesProps): JSX.Element => (
+const Favorites = (): JSX.Element => (
   <div className="page">
 
     <Helmet>
@@ -18,7 +13,7 @@ const Favorites = ({ favoriteOffers }: FavoritesProps): JSX.Element => (
       <div className="page__favorites-container container">
         <section className="favorites">
           <h1 className="favorites__title">Saved listing</h1>
-          <FavoriteList favoriteOffers={ favoriteOffers } />
+          <FavoriteList />
         </section>
       </div>
     </main>

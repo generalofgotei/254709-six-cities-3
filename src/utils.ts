@@ -1,4 +1,5 @@
-export const calculateRating = (rating: number): string => `${(rating / 5) * 100}%`;
+export const calculateRating = (rating: number): string =>
+  `${(rating / 5) * 100}%`;
 
 export const getHumanDate = (isoDate: string) => {
   const date = new Date(isoDate);
@@ -11,8 +12,6 @@ export const getHumanDate = (isoDate: string) => {
 
   return {
     dateTime,
-    monthYear
+    monthYear,
   };
 };
-
-

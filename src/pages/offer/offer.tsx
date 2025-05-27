@@ -2,22 +2,31 @@ import { useParams } from 'react-router-dom';
 import NotFound from '../not-found/not-found';
 import ReviewList from '../../components/review-list/review-list';
 import { AuthorizationStatus } from '../../const';
-import { OffersType, OfferType } from '../../types/offers';
+import { OfferType } from '../../types/offers';
 import { ReviewsType } from '../../types//reviews';
 import { calculateRating } from '../../utils';
 import Map from '../../components/map/map';
 import NearPlaces from '../../components/near-places/near-paces';
 import { Nullable } from 'vitest';
+import { useAppSelector } from '../../store';
+import { useState } from 'react';
 
 type OfferProps = {
   authorizationStatus: (typeof AuthorizationStatus)[keyof typeof AuthorizationStatus];
-  offers: OffersType;
   reviews: ReviewsType;
-  activeOffer: Nullable<OfferType>;
-  handleActiveOfferChange: (offer?: OfferType) => void;
 };
 
-const Offer = ({ authorizationStatus, offers, reviews, activeOffer, handleActiveOfferChange }: OfferProps) => {
+const Offer = ({ authorizationStatus, reviews }: OfferProps) => {
+  const [activeOffer, setActiveOffer] = useState<Nullable<OfferType>>(null);
+
+  const handleActiveOfferChange = (offer?: OfferType) => {
+    setActiveOffer(offer || null);
+  };
+
+
+  const activeCity = useAppSelector((state) => state.city);
+  const offers = useAppSelector((state) => state.offers).filter((offer) => offer.city.name === activeCity);
+
   const id = useParams().id;
   const currentOffer = offers.find((offer) => offer.id === id);
   if (!currentOffer) {
