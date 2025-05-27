@@ -1,7 +1,7 @@
 import { OfferType, OffersType } from '../../types/offers';
 import Card from '../card/card';
 import { useAppSelector } from '../../store';
-import { SortingOptions } from '../../const';
+import { sortingOptions } from '../../const';
 import { offersSelectors } from '../../selectors/offers';
 import { useState } from 'react';
 import cn from 'classnames';
@@ -12,13 +12,13 @@ type OfferSectionProps = {
 
 const sortOffers = (offers: OffersType, sortingType: string): OffersType => {
   switch (sortingType) {
-    case 'Price: low to high':
+    case sortingOptions.lowToHigh:
       return [...offers].sort((a, b) => a.price - b.price);
-    case 'Price: high to low':
+    case sortingOptions.highToLow:
       return [...offers].sort((a, b) => b.price - a.price);
-    case 'Top rated first':
+    case sortingOptions.topRated:
       return [...offers].sort((a, b) => b.rating - a.rating);
-    case 'Popular':
+    case sortingOptions.popular:
     default:
       return offers;
   }
@@ -27,7 +27,7 @@ const sortOffers = (offers: OffersType, sortingType: string): OffersType => {
 const OfferSection = ({
   onActiveOfferChange,
 }: OfferSectionProps): JSX.Element => {
-  const [activeSorting, setActiveSorting] = useState<string>('Popular');
+  const [activeSorting, setActiveSorting] = useState<string>(sortingOptions.popular);
   const [isSortingListOpen, setSortingListOpen] = useState(false);
   const handleSortingListToggle = () => setSortingListOpen(!isSortingListOpen);
   const handleSortingChange = (sorting: string) => {
@@ -65,7 +65,7 @@ const OfferSection = ({
             'places__options--opened': isSortingListOpen,
           })}
         >
-          {SortingOptions.map((option) => (
+          {Object.values(sortingOptions).map((option) => (
             <li
               key={option}
               className={cn('places__option', {
