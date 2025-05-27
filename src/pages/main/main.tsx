@@ -2,7 +2,7 @@ import NavItem from '../../components/nav-item/nav-item';
 import Map from '../../components/map/map';
 import OfferSection from '../../components/offer-section/offer-section';
 import { Helmet } from 'react-helmet-async';
-import { OffersType, OfferType } from '../../mocks/offers';
+import { OffersType, OfferType } from '../../types/offers';
 import { Nullable } from 'vitest';
 
 type MainProps = {
@@ -24,7 +24,7 @@ const Main = ({
     <main className="page__main page__main--index">
       <h1 className="visually-hidden">Cities</h1>
 
-      <NavItem />
+      <NavItem/>
 
       <div className="cities">
         <div className="cities__places-container container">

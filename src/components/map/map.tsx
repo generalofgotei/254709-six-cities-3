@@ -2,8 +2,7 @@ import {useRef, useEffect} from 'react';
 import leaflet from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import useMap from './useMap.ts';
-import { OffersType } from '../../mocks/offers.ts';
-import { OfferType } from '../../mocks/offers.ts';
+import { OffersType, OfferType } from '../../types/offers.ts';
 import { URL_MARKER_CURRENT, URL_MARKER_DEFAULT } from '../../const.ts';
 
 type MapProps = {
@@ -15,7 +14,6 @@ type MapProps = {
 function Map({className, offers, activeOffer}: MapProps): JSX.Element {
   const mapRef = useRef(null);
   const city = offers.length > 0 ? offers[0].city : null;
-
   const map = useMap({mapRef, city});
 
   const defaultCustomIcon = leaflet.icon({
@@ -37,6 +35,8 @@ function Map({className, offers, activeOffer}: MapProps): JSX.Element {
           map.removeLayer(layer);
         }
       });
+
+      map.setView([offers[0].city.location.latitude, offers[0].city.location.longitude], offers[0].city.location.zoom);
 
       offers.forEach((offer) => {
         leaflet

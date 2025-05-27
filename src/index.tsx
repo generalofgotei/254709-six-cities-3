@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './components/app/app';
+import { Provider } from 'react-redux';
 import { AuthorizationStatus } from './const';
-import { offers } from './mocks/offers';
 import { reviews } from './mocks/reviews';
+import { store } from './store'; // при этом импорте происходит инциализация стора, выполняется конфигуреСтор и редьюсер. Автодиспатч, стор с нач состоянием
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -11,6 +12,8 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <App authorizationStatus={AuthorizationStatus.Auth} offers={offers} reviews={reviews}/>
+    <Provider store={store}>
+      <App authorizationStatus={AuthorizationStatus.Auth} reviews={reviews}/>
+    </Provider>
   </React.StrictMode>
 );
