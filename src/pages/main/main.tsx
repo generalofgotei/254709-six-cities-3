@@ -6,7 +6,7 @@ import { useAppSelector } from '../../store';
 import { useState } from 'react';
 import { Nullable } from 'vitest';
 import { OfferType } from '../../types/offers';
-import { selectActiveOffers } from '../../selectors/offers';
+import { offersSelectors } from '../../selectors/offers';
 
 const Main = (): JSX.Element => {
   const [activeOffer, setActiveOffer] = useState<Nullable<OfferType>>(null);
@@ -14,8 +14,9 @@ const Main = (): JSX.Element => {
   const handleActiveOfferChange = (offer?: OfferType) => {
     setActiveOffer(offer || null);
   };
+  const activeCity = useAppSelector(offersSelectors.city);
+  const activeOffers = useAppSelector(offersSelectors.offers).filter((offer) => offer.city.name === activeCity);
 
-  const activeOffers = useAppSelector(selectActiveOffers);
   return (
     <div className="page page--gray page--main">
       <Helmet>

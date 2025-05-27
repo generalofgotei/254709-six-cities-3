@@ -1,14 +1,14 @@
 import { FavoriteItem } from '../favorite-item/favorite-item';
 import { OffersType } from '../../types/offers';
 import { useAppSelector } from '../../store';
-import { selectFavoriteOffers } from '../../selectors/offers';
+import { offersSelectors } from '../../selectors/offers';
 
 type OffersByCityType = {
   [city: string]: OffersType;
 };
 
 export const FavoriteList = (): JSX.Element => {
-  const favoriteOffers = useAppSelector(selectFavoriteOffers);
+  const favoriteOffers = useAppSelector(offersSelectors.favoriteOffers);
 
   const offersByCity: OffersByCityType =
     favoriteOffers.reduce((acc, offer) => {

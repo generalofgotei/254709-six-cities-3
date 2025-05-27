@@ -10,7 +10,7 @@ import NearPlaces from '../../components/near-places/near-paces';
 import { Nullable } from 'vitest';
 import { useAppSelector } from '../../store';
 import { useState } from 'react';
-import { selectOffers } from '../../selectors/offers';
+import { offersSelectors } from '../../selectors/offers';
 
 type OfferProps = {
   authorizationStatus: (typeof AuthorizationStatus)[keyof typeof AuthorizationStatus];
@@ -25,7 +25,8 @@ const Offer = ({ authorizationStatus, reviews }: OfferProps) => {
   };
 
 
-  const offers = useAppSelector(selectOffers);
+  const activeCity = useAppSelector(offersSelectors.city);
+  const offers = useAppSelector((state) => state.offers).filter((offer) => offer.city.name === activeCity);
 
   const id = useParams().id;
   const currentOffer = offers.find((offer) => offer.id === id);
