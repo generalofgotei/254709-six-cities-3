@@ -1,8 +1,18 @@
+export const BASE_URL = 'https://15.design.htmlacademy.pro/six-cities';
+export const API_TIMEOUT = 5000;
+
 export const AppRoute = {
   Main: '/',
   Login: '/login',
   Favorites: '/favorites',
   Offer: '/offer',
+} as const;
+
+export const Endpoint = {
+  Offers: '/offers',
+  Favorite: '/favorite',
+  Login: '/login',
+  Logout: '/logout',
 } as const;
 
 export const AuthorizationStatus = {
@@ -36,4 +46,11 @@ export const sortingOptions = {
   lowToHigh: 'Price: low to high',
   highToLow: 'Price: high to low',
   topRated: 'Top rated first',
+} as const;
+
+export const RequestStatus = {
+  idle: 'Idle',
+  loading: 'Loading',
+  success: 'Success',
+  failed: 'Failed'
 } as const;

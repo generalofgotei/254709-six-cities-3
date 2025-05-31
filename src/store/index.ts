@@ -1,10 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { reducer } from './reducer';
-import { RootState, AppDispatch } from '../types/store';
 import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux';
+import { createAPI } from '../services/api';
+import { RootState, AppDispatch } from '../types/store';
+import offersReducer from './slices/offersSlice';
+
 
 export const store = configureStore({
-  reducer,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ thunk: {extraArgument: createAPI()}}),
+  reducer: {
+    offers: offersReducer,
+  }
 });
 
 export const useAppDispatch = () => useDispatch<AppDispatch>();

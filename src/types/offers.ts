@@ -1,3 +1,5 @@
+import { Cities, RequestStatus } from '../const';
+
 type Location = {
   latitude: number;
   longitude: number;
@@ -20,6 +22,15 @@ export type OfferType = {
   isFavorite: boolean;
   isPremium: boolean;
   rating: number;
+};
+
+type RequestStatusType = typeof RequestStatus[keyof typeof RequestStatus];
+
+export type OffersState = {
+  city: (typeof Cities)[number];
+  offers: OffersType;
+  status: RequestStatusType;
+  error: string | null;
 };
 
 export type OffersType = OfferType[];

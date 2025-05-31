@@ -2,7 +2,7 @@ import { OfferType, OffersType } from '../../types/offers';
 import Card from '../card/card';
 import { useAppSelector } from '../../store';
 import { sortingOptions } from '../../const';
-import { offersSelectors } from '../../selectors/offers';
+import { offersSelectors } from '../../selectors/offersSelectors';
 import { useState } from 'react';
 import cn from 'classnames';
 
@@ -35,8 +35,8 @@ const OfferSection = ({
     handleSortingListToggle();
   };
 
-  const activeCity = useAppSelector(offersSelectors.city);
-  const activeOffers = useAppSelector(offersSelectors.offers).filter(
+  const activeCity = useAppSelector(offersSelectors.selectCity);
+  const activeOffers = useAppSelector(offersSelectors.selectOffers).filter(
     (offer) => offer.city.name === activeCity
   );
 
