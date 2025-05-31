@@ -13,6 +13,7 @@ export const Endpoint = {
   Favorite: '/favorite',
   Login: '/login',
   Logout: '/logout',
+  Comments: '/comments',
 } as const;
 
 export const AuthorizationStatus = {

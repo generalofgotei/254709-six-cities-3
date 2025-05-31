@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Cities } from '../../const';
 import { RequestStatus } from '../../const';
-import type { OffersState, OffersType } from '../../types/offers';
+import type { OffersStateType, OffersType } from '../../types/offers';
 import { fetchAllOffers } from '../thunk/offersThunk';
 
-const initialState: OffersState = {
+const initialState: OffersStateType = {
   city: Cities[0],
   offers: [],
   status: RequestStatus.idle,

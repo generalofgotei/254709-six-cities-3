@@ -3,12 +3,14 @@ import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux';
 import { createAPI } from '../services/api';
 import { RootState, AppDispatch } from '../types/store';
 import offersReducer from './slices/offersSlice';
+import offerDetailReducer from './slices/offerDetailSlice';
 
 
 export const store = configureStore({
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({ thunk: {extraArgument: createAPI()}}),
   reducer: {
     offers: offersReducer,
+    offerDetail: offerDetailReducer,
   }
 });
 

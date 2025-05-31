@@ -1,7 +1,6 @@
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { AppRoute, AuthorizationStatus } from '../../const';
-import { ReviewsType } from '../../types/reviews';
 import Layout from '../layout/layout';
 import Main from '../../pages/main/main';
 import Login from '../../pages/login/login';
@@ -17,10 +16,9 @@ import { offersSelectors } from '../../selectors/offersSelectors';
 
 type AppProps = {
   authorizationStatus: (typeof AuthorizationStatus)[keyof typeof AuthorizationStatus];
-  reviews: ReviewsType;
 };
 
-const App = ({ authorizationStatus, reviews }: AppProps): JSX.Element => {
+const App = ({ authorizationStatus }: AppProps): JSX.Element => {
   const dispatch = useAppDispatch();
   const status = useAppSelector(offersSelectors.selectStatus);
 
@@ -53,7 +51,6 @@ const App = ({ authorizationStatus, reviews }: AppProps): JSX.Element => {
               element={
                 <Offer
                   authorizationStatus={authorizationStatus}
-                  reviews={reviews}
                 />
               }
             />
