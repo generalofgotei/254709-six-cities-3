@@ -7,6 +7,9 @@ import { useState } from 'react';
 import { Nullable } from 'vitest';
 import type { OfferType } from '../../types/offers';
 import { offersSelectors } from '../../selectors/offersSelectors';
+import { RequestStatus } from '../../const';
+import Spinner from '../../components/spinner/spinner';
+
 
 const Main = (): JSX.Element => {
   const [activeOffer, setActiveOffer] = useState<Nullable<OfferType>>(null);
@@ -14,8 +17,13 @@ const Main = (): JSX.Element => {
   const handleActiveOfferChange = (offer?: OfferType) => {
     setActiveOffer(offer || null);
   };
+  const status = useAppSelector(offersSelectors.selectStatus);
   const activeCity = useAppSelector(offersSelectors.selectCity);
   const activeOffers = useAppSelector(offersSelectors.selectOffers).filter((offer) => offer.city.name === activeCity);
+
+  if (status === RequestStatus.loading) {
+    return <Spinner />;
+  }
 
   return (
     <div className="page page--gray page--main">

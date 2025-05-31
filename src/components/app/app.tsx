@@ -30,7 +30,6 @@ const App = ({ authorizationStatus, reviews }: AppProps): JSX.Element => {
       dispatch(fetchAllOffers());
     }
   }, [dispatch, status]);
-
   return (
     <HelmetProvider>
       <BrowserRouter>
