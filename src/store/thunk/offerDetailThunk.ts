@@ -41,3 +41,16 @@ export const fetchComments = createAsyncThunk<
     throw new Error('Error loading comments');
   }
 });
+
+export const toggleFavoriteStatus = createAsyncThunk<
+  OfferDetailType,
+  { offerId: string; status: 0 | 1 },
+  { extra: AxiosInstance }
+>('offerDetail/toggleFavoriteStatus', async ({ offerId, status }, { extra: api }) => {
+  try {
+    const response = await api.post<OfferDetailType>(`${Endpoint.Favorite}/${offerId}/${status}`);
+    return response.data;
+  } catch (error) {
+    throw new Error('Error toggle favorite status');
+  }
+});

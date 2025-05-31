@@ -61,7 +61,7 @@ const Offer = ({ authorizationStatus }: OfferProps) => {
         <section className="offer">
           <div className="offer__gallery-container container">
             <div className="offer__gallery">
-              {images.slice(0, 6).map((image) => (
+              {images.map((image) => (
                 <div key={image} className="offer__image-wrapper">
                   <img
                     className="offer__image"

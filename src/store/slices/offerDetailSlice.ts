@@ -1,12 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RequestStatus } from '../../const';
 import type { OfferDetailStateType } from '../../types/offers';
-import type { OfferDetailType, NearbyOffersType, CommentsType } from '../../types/offers';
+import type {
+  OfferDetailType,
+  NearbyOffersType,
+  CommentsType,
+} from '../../types/offers';
 
 import {
   fetchOfferDetail,
   fetchNearbyOffers,
-  fetchComments
+  fetchComments,
+  toggleFavoriteStatus,
 } from '../thunk/offerDetailThunk';
 
 const initialState: OfferDetailStateType = {
@@ -75,6 +80,17 @@ export const offerDetailSlice = createSlice({
       })
       .addCase(fetchComments.rejected, (state, action) => {
         state.error = action.error.message || 'Error loading comments';
+      })
+      // Toggle favorite status
+      .addCase(toggleFavoriteStatus.pending, (state) => {
+        state.error = null;
+      })
+      .addCase(toggleFavoriteStatus.fulfilled, (state, action) => {
+        state.offer = action.payload;
+        state.error = null;
+      })
+      .addCase(toggleFavoriteStatus.rejected, (state, action) => {
+        state.error = action.error.message || 'Error toggle favorite status';
       });
   },
 });
