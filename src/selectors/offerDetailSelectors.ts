@@ -6,4 +6,5 @@ export const offerDetailSelectors = {
   selectComments: (state: { offerDetail: OfferDetailStateType }) => state.offerDetail.comments,
   selectStatus: (state: { offerDetail: OfferDetailStateType }) => state.offerDetail.status,
   selectError: (state: { offerDetail: OfferDetailStateType }) => state.offerDetail.error,
+  selectFavoriteStatus: (state: { offerDetail: OfferDetailStateType }) => state.offerDetail.offer?.isFavorite,
 };

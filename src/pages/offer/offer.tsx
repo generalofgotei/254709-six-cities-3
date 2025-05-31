@@ -11,9 +11,14 @@ import { useAppSelector, useAppDispatch } from '../../store';
 import { useState, useEffect } from 'react';
 import { offersSelectors } from '../../selectors/offersSelectors';
 import { offerDetailSelectors } from '../../selectors/offerDetailSelectors';
-import { fetchOfferDetail, fetchNearbyOffers, fetchComments } from '../../store/thunk/offerDetailThunk';
+import {
+  fetchOfferDetail,
+  fetchNearbyOffers,
+  fetchComments,
+} from '../../store/thunk/offerDetailThunk';
 import { RequestStatus } from '../../const';
 import Spinner from '../../components/spinner/spinner';
+import { toggleFavoriteStatus } from '../../store/thunk/offerDetailThunk';
 
 type OfferProps = {
   authorizationStatus: (typeof AuthorizationStatus)[keyof typeof AuthorizationStatus];
@@ -37,7 +42,22 @@ const Offer = ({ authorizationStatus }: OfferProps) => {
   const status = useAppSelector(offerDetailSelectors.selectStatus);
   const currentOffer = useAppSelector(offerDetailSelectors.selectOffer);
   const comments = useAppSelector(offerDetailSelectors.selectComments);
-  const nearbyOffers = useAppSelector(offerDetailSelectors.selectNearbyOffers).slice(0, 3);
+  const nearbyOffers = useAppSelector(
+    offerDetailSelectors.selectNearbyOffers
+  ).slice(0, 3);
+  const favoriteStatus = useAppSelector(
+    offerDetailSelectors.selectFavoriteStatus
+  );
+  const handleToggleFavorite = () => {
+    console.log('+1')
+    dispatch(
+      toggleFavoriteStatus({
+        offerId: id,
+        status: 1,
+      })
+    );
+  };
+
   useEffect(() => {
     dispatch(fetchOfferDetail(id));
     dispatch(fetchNearbyOffers(id));
@@ -50,7 +70,20 @@ const Offer = ({ authorizationStatus }: OfferProps) => {
   if (!currentOffer) {
     return <NotFound />;
   }
-  const { isFavorite, isPremium, price, rating, title, type, bedrooms, maxAdults, goods, host, images, description } = currentOffer;
+  const {
+    isFavorite,
+    isPremium,
+    price,
+    rating,
+    title,
+    type,
+    bedrooms,
+    maxAdults,
+    goods,
+    host,
+    images,
+    description,
+  } = currentOffer;
   const neighbourhoodOffers = offers
     .filter((offer: OfferType) => offer.id !== id)
     .slice(0, 3);
@@ -86,6 +119,7 @@ const Offer = ({ authorizationStatus }: OfferProps) => {
                     isFavorite && 'offer__bookmark-button--active'
                   }`}
                   type="button"
+                  onClick={handleToggleFavorite}
                 >
                   <svg className="offer__bookmark-icon" width={31} height={33}>
                     <use xlinkHref="#icon-bookmark" />
@@ -122,7 +156,11 @@ const Offer = ({ authorizationStatus }: OfferProps) => {
               <div className="offer__inside">
                 <h2 className="offer__inside-title">What&apos;s inside</h2>
                 <ul className="offer__inside-list">
-                  {goods.map((good) => (<li key= {good} className="offer__inside-item">{good}</li>))}
+                  {goods.map((good) => (
+                    <li key={good} className="offer__inside-item">
+                      {good}
+                    </li>
+                  ))}
                 </ul>
               </div>
               <div className="offer__host">
@@ -141,9 +179,7 @@ const Offer = ({ authorizationStatus }: OfferProps) => {
                   <span className="offer__user-status">{host.isPro}</span>
                 </div>
                 <div className="offer__description">
-                  <p className="offer__text">
-                    {description}
-                  </p>
+                  <p className="offer__text">{description}</p>
                 </div>
               </div>
 
