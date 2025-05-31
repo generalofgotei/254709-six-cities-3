@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../../const';
 import { calculateRating } from '../../utils';
-import { OfferType } from '../../types/offers';
+import type { OfferType } from '../../types/offers';
 import cn from 'classnames';
 
 type CardProps = {

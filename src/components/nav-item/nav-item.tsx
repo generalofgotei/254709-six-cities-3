@@ -1,14 +1,14 @@
 import { Cities } from '../../const';
 import CityItem from '../city-item/city-item';
 import { useAppDispatch, useAppSelector } from '../../store';
-import { setCity } from '../../store/action';
-import { offersSelectors } from '../../selectors/offers';
+import { offersSelectors } from '../../selectors/offersSelectors';
+import { setCity } from '../../store/slices/offersSlice';
 
 type CityName = (typeof Cities)[number];
 
 const NavItem = (): JSX.Element => {
   const dispatch = useAppDispatch();
-  const activeCity = useAppSelector(offersSelectors.city);
+  const activeCity = useAppSelector(offersSelectors.selectCity);
 
   const handleActiveCityChange = (city: CityName) => {
     dispatch(setCity(city));
