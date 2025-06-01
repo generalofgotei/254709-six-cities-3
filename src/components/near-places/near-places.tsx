@@ -1,4 +1,4 @@
-import Card from '../../components/card/card';
+import Card from '../card/card';
 import { OffersType, OfferType } from '../../types/offers';
 
 type NearPlacesProps ={

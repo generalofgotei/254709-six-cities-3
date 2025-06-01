@@ -25,6 +25,7 @@ const Card = ({
     title,
     type,
   } = offer;
+
   // Вспомнить на 100% логику работы кнопок
   const handleMouseOn = () => handleHover && handleHover(offer);
   const handleMouseOff = () => handleHover && handleHover();

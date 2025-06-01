@@ -15,13 +15,13 @@ type Host = {
   name: string;
   avatarUrl: string;
   isPro: boolean;
-}
+};
 
 type User = {
   name: string;
   avatarUrl: string;
   isPro: boolean;
-}
+};
 
 export type OfferDetailType = {
   id: string;
@@ -78,7 +78,7 @@ export type OfferType = {
   rating: number;
 };
 
-type RequestStatusType = typeof RequestStatus[keyof typeof RequestStatus];
+type RequestStatusType = (typeof RequestStatus)[keyof typeof RequestStatus];
 
 export type OffersStateType = {
   city: (typeof Cities)[number];
@@ -92,7 +92,7 @@ export type OffersType = OfferType[];
 export type OfferDetailStateType = {
   offer: OfferDetailType | null;
   nearbyOffers: NearbyOffersType;
-  comments: CommentsType;
-  status: typeof RequestStatus[keyof typeof RequestStatus];
+  comments: [];
+  status: (typeof RequestStatus)[keyof typeof RequestStatus];
   error: string | null;
 };

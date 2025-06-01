@@ -35,7 +35,7 @@ export const fetchComments = createAsyncThunk<
   { extra: AxiosInstance }
 >('offerDetail/fetchComments', async (offerId, { extra: api }) => {
   try {
-    const response = await api.get<CommentsType>(`/comments/${offerId}`);
+    const response = await api.get<CommentsType>(`${Endpoint.Comments}/${offerId}`);
     return response.data;
   } catch (error) {
     throw new Error('Error loading comments');
@@ -54,3 +54,20 @@ export const toggleFavoriteStatus = createAsyncThunk<
     throw new Error('Error toggle favorite status');
   }
 });
+
+// Пост коммента
+export const sendComment = createAsyncThunk<
+  CommentsType,
+  { offerId: string; review: {comment: string; rating: number} },
+  { extra: AxiosInstance }
+>(
+  'offerDetail/postComment',
+  async ({ offerId, review }, { extra: api }) => {
+    try {
+      const response = await api.post<CommentsType>(`${Endpoint.Comments}/${offerId}`, review);
+      return response.data;
+    } catch (error) {
+      throw new Error('Error posting comment');
+    }
+  }
+);

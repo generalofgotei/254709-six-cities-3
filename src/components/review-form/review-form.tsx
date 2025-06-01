@@ -1,20 +1,38 @@
-import { ReactEventHandler, useState, Fragment } from 'react';
+import { ReactEventHandler, useState, Fragment, FormEvent } from 'react';
 import { rating } from '../../const';
+import { sendComment } from '../../store/thunk/offerDetailThunk';
+import { useAppDispatch } from '../../store';
+import { useParams } from 'react-router-dom';
 
 type handleChangeType = ReactEventHandler<
   HTMLInputElement | HTMLTextAreaElement
 >;
 
 const ReviewForm = (): JSX.Element => {
-  const [review, setReview] = useState({ rating: 0, review: '' });
+  const { id: offerId } = useParams<{ id: string }>();
+  const dispatch = useAppDispatch();
+  const [review, setReview] = useState({ rating: 0, comment: '' });
 
   const handleChange: handleChangeType = (evt) => {
     const { name, value } = evt.currentTarget;
-    setReview({ ...review, [name]: value });
+    setReview({ ...review, [name]: name === 'rating' ? Number(value) : value});
   };
 
+  const handleSubmitComment = (evt: FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
+    if (!offerId) {
+      throw new Error('ID didnt find');
+    }
+    dispatch(sendComment({ offerId, review }));
+    setReview({ rating: 0, comment: '' });
+  };
   return (
-    <form className="reviews__form form" action="#" method="post">
+    <form
+      className="reviews__form form"
+      action="#"
+      method="post"
+      onSubmit={handleSubmitComment}
+    >
       <label className="reviews__label form__label" htmlFor="review">
         Your review
       </label>
@@ -45,9 +63,10 @@ const ReviewForm = (): JSX.Element => {
       <textarea
         className="reviews__textarea form__textarea"
         id="review"
-        name="review"
+        name="comment"
         placeholder="Tell how was your stay, what you like and what can be improved"
         onChange={handleChange}
+        value={review.comment}
       />
       <div className="reviews__button-wrapper">
         <p className="reviews__help">
@@ -58,7 +77,7 @@ const ReviewForm = (): JSX.Element => {
         <button
           className="reviews__submit form__submit button"
           type="submit"
-          disabled={review.review.length < 50 || review.rating === 0}
+          disabled={review.comment.length < 50 || review.rating === 0}
         >
           Submit
         </button>

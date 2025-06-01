@@ -1,15 +1,13 @@
 import { useParams } from 'react-router-dom';
 import NotFound from '../not-found/not-found';
 import ReviewList from '../../components/review-list/review-list';
-import { AuthorizationStatus } from '../../const';
 import type { OfferType } from '../../types/offers';
 import { calculateRating } from '../../utils';
 import Map from '../../components/map/map';
-import NearPlaces from '../../components/near-places/near-paces';
+import NearPlaces from '../../components/near-places/near-places';
 import { Nullable } from 'vitest';
 import { useAppSelector, useAppDispatch } from '../../store';
 import { useState, useEffect } from 'react';
-import { offersSelectors } from '../../selectors/offersSelectors';
 import { offerDetailSelectors } from '../../selectors/offerDetailSelectors';
 import {
   fetchOfferDetail,
@@ -18,50 +16,39 @@ import {
 } from '../../store/thunk/offerDetailThunk';
 import { RequestStatus } from '../../const';
 import Spinner from '../../components/spinner/spinner';
-import { toggleFavoriteStatus } from '../../store/thunk/offerDetailThunk';
+// import { toggleFavoriteStatus } from '../../store/thunk/offerDetailThunk';
 
-type OfferProps = {
-  authorizationStatus: (typeof AuthorizationStatus)[keyof typeof AuthorizationStatus];
-};
-
-const Offer = ({ authorizationStatus }: OfferProps) => {
+const Offer = () => {
   const [activeOffer, setActiveOffer] = useState<Nullable<OfferType>>(null);
 
   const handleActiveOfferChange = (offer?: OfferType) => {
     setActiveOffer(offer || null);
   };
 
-  const allOffers = useAppSelector(offersSelectors.selectOffers);
-  const activeCity = useAppSelector(offersSelectors.selectCity);
-  const offers = allOffers.filter(
-    (offer: OfferType) => offer.city.name === activeCity
-  );
-
-  const id = useParams().id;
+  const { id } = useParams();
   const dispatch = useAppDispatch();
   const status = useAppSelector(offerDetailSelectors.selectStatus);
   const currentOffer = useAppSelector(offerDetailSelectors.selectOffer);
   const comments = useAppSelector(offerDetailSelectors.selectComments);
   const nearbyOffers = useAppSelector(
     offerDetailSelectors.selectNearbyOffers
-  ).slice(0, 3);
-  const favoriteStatus = useAppSelector(
-    offerDetailSelectors.selectFavoriteStatus
   );
-  const handleToggleFavorite = () => {
-    console.log('+1')
-    dispatch(
-      toggleFavoriteStatus({
-        offerId: id,
-        status: 1,
-      })
-    );
-  };
+  // const favoriteStatus = useAppSelector(
+  //   offerDetailSelectors.selectFavoriteStatus
+  // );
+  // const handleToggleFavorite = () => {
+  //   dispatch(
+  //     toggleFavoriteStatus({
+  //       offerId: id,
+  //       status: 1,
+  //     })
+  //   );
+  // };
 
   useEffect(() => {
-    dispatch(fetchOfferDetail(id));
-    dispatch(fetchNearbyOffers(id));
-    dispatch(fetchComments(id));
+    dispatch(fetchOfferDetail(id as string));
+    dispatch(fetchNearbyOffers(id as string));
+    dispatch(fetchComments(id as string));
   }, [dispatch, id]);
 
   if (status === RequestStatus.loading) {
@@ -84,9 +71,6 @@ const Offer = ({ authorizationStatus }: OfferProps) => {
     images,
     description,
   } = currentOffer;
-  const neighbourhoodOffers = offers
-    .filter((offer: OfferType) => offer.id !== id)
-    .slice(0, 3);
 
   return (
     <div className="page">
@@ -119,7 +103,7 @@ const Offer = ({ authorizationStatus }: OfferProps) => {
                     isFavorite && 'offer__bookmark-button--active'
                   }`}
                   type="button"
-                  onClick={handleToggleFavorite}
+                  // onClick={handleToggleFavorite}
                 >
                   <svg className="offer__bookmark-icon" width={31} height={33}>
                     <use xlinkHref="#icon-bookmark" />
@@ -184,7 +168,6 @@ const Offer = ({ authorizationStatus }: OfferProps) => {
               </div>
 
               <ReviewList
-                authorizationStatus={authorizationStatus}
                 reviews={comments}
               />
             </div>
@@ -197,7 +180,7 @@ const Offer = ({ authorizationStatus }: OfferProps) => {
         </section>
         <div className="container">
           <NearPlaces
-            offers={neighbourhoodOffers}
+            offers={nearbyOffers}
             onActiveOfferChange={handleActiveOfferChange}
           />
         </div>

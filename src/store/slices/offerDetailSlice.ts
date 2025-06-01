@@ -1,17 +1,13 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { RequestStatus } from '../../const';
 import type { OfferDetailStateType } from '../../types/offers';
-import type {
-  OfferDetailType,
-  NearbyOffersType,
-  CommentsType,
-} from '../../types/offers';
 
 import {
   fetchOfferDetail,
   fetchNearbyOffers,
   fetchComments,
   toggleFavoriteStatus,
+  sendComment
 } from '../thunk/offerDetailThunk';
 
 const initialState: OfferDetailStateType = {
@@ -25,24 +21,7 @@ const initialState: OfferDetailStateType = {
 export const offerDetailSlice = createSlice({
   name: 'offerDetail',
   initialState,
-  reducers: {
-    clearOfferDetail: (state) => {
-      state.offer = null;
-      state.nearbyOffers = [];
-      state.comments = [];
-      state.error = null;
-      state.status = RequestStatus.idle;
-    },
-    setOfferDetail: (state, action: PayloadAction<OfferDetailType>) => {
-      state.offer = action.payload;
-    },
-    setNearbyOffers: (state, action: PayloadAction<NearbyOffersType>) => {
-      state.nearbyOffers = action.payload;
-    },
-    setComments: (state, action: PayloadAction<CommentsType>) => {
-      state.comments = action.payload;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       // Fetch offer detail
@@ -91,15 +70,19 @@ export const offerDetailSlice = createSlice({
       })
       .addCase(toggleFavoriteStatus.rejected, (state, action) => {
         state.error = action.error.message || 'Error toggle favorite status';
+      })
+      // Post comment
+      .addCase(sendComment.pending, (state) => {
+        state.error = null;
+      })
+      .addCase(sendComment.fulfilled, (state, action) => {
+        state.comments = action.payload;
+        state.error = null;
+      })
+      .addCase(sendComment.rejected, (state, action) => {
+        state.error = action.error.message || 'Comment didnt send';
       });
   },
 });
-
-export const {
-  clearOfferDetail,
-  setOfferDetail,
-  setNearbyOffers,
-  setComments,
-} = offerDetailSlice.actions;
 
 export default offerDetailSlice.reducer;
