@@ -57,14 +57,14 @@ export const toggleFavoriteStatus = createAsyncThunk<
 
 // Пост коммента
 export const sendComment = createAsyncThunk<
-  CommentsType,
+  Comment,
   { offerId: string; review: {comment: string; rating: number} },
   { extra: AxiosInstance }
 >(
   'offerDetail/postComment',
   async ({ offerId, review }, { extra: api }) => {
     try {
-      const response = await api.post<CommentsType>(`${Endpoint.Comments}/${offerId}`, review);
+      const response = await api.post<Comment>(`${Endpoint.Comments}/${offerId}`, review);
       return response.data;
     } catch (error) {
       throw new Error('Error posting comment');

@@ -92,7 +92,7 @@ export type OffersType = OfferType[];
 export type OfferDetailStateType = {
   offer: OfferDetailType | null;
   nearbyOffers: NearbyOffersType;
-  comments: [];
+  comments: CommentsType;
   status: (typeof RequestStatus)[keyof typeof RequestStatus];
   error: string | null;
 };

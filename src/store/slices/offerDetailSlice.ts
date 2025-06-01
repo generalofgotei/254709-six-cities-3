@@ -76,7 +76,7 @@ export const offerDetailSlice = createSlice({
         state.error = null;
       })
       .addCase(sendComment.fulfilled, (state, action) => {
-        state.comments = action.payload;
+        state.comments.push(action.payload);
         state.error = null;
       })
       .addCase(sendComment.rejected, (state, action) => {
