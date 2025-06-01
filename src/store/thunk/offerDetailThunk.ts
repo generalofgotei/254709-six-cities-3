@@ -2,6 +2,7 @@ import type { AxiosInstance } from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import type { OfferDetailType, NearbyOffersType, CommentsType } from '../../types/offers';
 import { Endpoint } from '../../const';
+import { Comment } from '../../types/offers';
 
 export const fetchOfferDetail = createAsyncThunk<
   OfferDetailType,
@@ -57,7 +58,17 @@ export const toggleFavoriteStatus = createAsyncThunk<
 
 // Пост коммента
 export const sendComment = createAsyncThunk<
-  Comment,
+  {
+    id: string;
+    date: string;
+    user: {
+      name: string;
+      avatarUrl: string;
+      isPro: boolean;
+    };
+    comment: string;
+    rating: number;
+  },
   { offerId: string; review: {comment: string; rating: number} },
   { extra: AxiosInstance }
 >(

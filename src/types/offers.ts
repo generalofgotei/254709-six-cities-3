@@ -54,7 +54,7 @@ type NearbyOffer = {
   previewImage: string;
 };
 
-type Comment = {
+export type Comment = {
   id: string;
   date: string;
   user: User;
