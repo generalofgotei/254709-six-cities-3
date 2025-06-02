@@ -45,8 +45,8 @@ const Card = ({
     <article
       className={cn(
         'place-card',
-        { favorites__card: isFavoritePage },
-        { cities__card: !isFavoritePage }
+        { 'favorites__card': isFavoritePage },
+        { 'cities__card': !isFavoritePage }
       )}
       onMouseEnter={handleMouseOn}
       onMouseLeave={handleMouseOff}
