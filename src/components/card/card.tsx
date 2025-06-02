@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import { AppRoute } from '../../const';
 import { calculateRating } from '../../utils';
 import type { OfferType } from '../../types/offers';
+import { useAppDispatch } from '../../store';
+import { toggleFavorite } from '../../utils';
 import cn from 'classnames';
 
 type CardProps = {
@@ -25,14 +27,14 @@ const Card = ({
     title,
     type,
   } = offer;
-
+  const dispatch = useAppDispatch();
   // Вспомнить на 100% логику работы кнопок
   const handleMouseOn = () => handleHover && handleHover(offer);
   const handleMouseOff = () => handleHover && handleHover();
-  const handleToggleFavorite = (evt) => {
-    evt.preventDefault();
-    console.log(evt.currentTarget.name);
-  }
+
+  const handleToggleFavorite = () => {
+    toggleFavorite(dispatch, id, isFavorite);
+  };
 
   return (
     <article

@@ -16,7 +16,7 @@ import {
 } from '../../store/thunk/offerDetailThunk';
 import { RequestStatus } from '../../const';
 import Spinner from '../../components/spinner/spinner';
-import { toggleFavoriteStatus } from '../../store/thunk/offersThunk';
+import { toggleFavorite } from '../../utils';
 import { userSelectors } from '../../selectors/userSelectors';
 import { AuthorizationStatus } from '../../const';
 import cn from 'classnames';
@@ -63,16 +63,7 @@ const Offer = () => {
   } = currentOffer;
 
   const handleToggleFavorite = () => {
-    if (!id) {
-      return;
-    }
-    const isFavoriteStatus = isFavorite ? 0 : 1;
-    dispatch(
-      toggleFavoriteStatus({
-        offerId: id,
-        status: isFavoriteStatus,
-      })
-    );
+    toggleFavorite(dispatch, id as string, isFavorite as boolean);
   };
 
   return (
