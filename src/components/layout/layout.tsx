@@ -34,15 +34,14 @@ const Layout = (): JSX.Element => {
     getLayoutState(pathname);
   const authorizationStatus = useAppSelector(userSelectors.selectAuthStatus);
   const userEmail = useAppSelector(userSelectors.selectEmail);
-  const favoriteOffersCount = useAppSelector(offersSelectors.selectFavoriteOffers).length;
-  // if (authorizationStatus === AuthorizationStatus.Auth) {
-  //
-  // }
+  const favoriteOffersCount = useAppSelector(offersSelectors.selectFavoriteOffersCount);
+
 
   const dispatch = useAppDispatch();
   const handleLogout = () => {
     dispatch(logoutUser());
   };
+
   return (
     <div className={mainClassName}>
       <header className="header">

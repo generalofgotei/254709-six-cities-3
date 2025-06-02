@@ -6,9 +6,9 @@ import {
   fetchOfferDetail,
   fetchNearbyOffers,
   fetchComments,
-  toggleFavoriteStatus,
-  sendComment
+  sendComment,
 } from '../thunk/offerDetailThunk';
+import { toggleFavoriteStatus } from '../thunk/offersThunk';
 
 const initialState: OfferDetailStateType = {
   offer: null,
@@ -60,17 +60,6 @@ export const offerDetailSlice = createSlice({
       .addCase(fetchComments.rejected, (state, action) => {
         state.error = action.error.message || 'Error loading comments';
       })
-      // Toggle favorite status
-      .addCase(toggleFavoriteStatus.pending, (state) => {
-        state.error = null;
-      })
-      .addCase(toggleFavoriteStatus.fulfilled, (state, action) => {
-        state.offer = action.payload;
-        state.error = null;
-      })
-      .addCase(toggleFavoriteStatus.rejected, (state, action) => {
-        state.error = action.error.message || 'Error toggle favorite status';
-      })
       // Post comment
       .addCase(sendComment.pending, (state) => {
         state.error = null;
@@ -81,6 +70,11 @@ export const offerDetailSlice = createSlice({
       })
       .addCase(sendComment.rejected, (state, action) => {
         state.error = action.error.message || 'Comment didnt send';
+      })
+      .addCase(toggleFavoriteStatus.fulfilled, (state, action) => {
+        if (state.offer?.id === action.meta.arg.offerId) {
+          state.offer.isFavorite = !state.offer.isFavorite;
+        }
       });
   },
 });

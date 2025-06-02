@@ -16,11 +16,13 @@ import {
 } from '../../store/thunk/offerDetailThunk';
 import { RequestStatus } from '../../const';
 import Spinner from '../../components/spinner/spinner';
-// import { toggleFavoriteStatus } from '../../store/thunk/offerDetailThunk';
+import { toggleFavoriteStatus } from '../../store/thunk/offersThunk';
+import { userSelectors } from '../../selectors/userSelectors';
+import { AuthorizationStatus } from '../../const';
+import cn from 'classnames';
 
 const Offer = () => {
   const [activeOffer, setActiveOffer] = useState<Nullable<OfferType>>(null);
-
   const handleActiveOfferChange = (offer?: OfferType) => {
     setActiveOffer(offer || null);
   };
@@ -28,22 +30,10 @@ const Offer = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
   const status = useAppSelector(offerDetailSelectors.selectStatus);
+  const authorizationStatus = useAppSelector(userSelectors.selectAuthStatus);
   const currentOffer = useAppSelector(offerDetailSelectors.selectOffer);
   const comments = useAppSelector(offerDetailSelectors.selectComments);
-  const nearbyOffers = useAppSelector(
-    offerDetailSelectors.selectNearbyOffers
-  );
-  // const favoriteStatus = useAppSelector(
-  //   offerDetailSelectors.selectFavoriteStatus
-  // );
-  // const handleToggleFavorite = () => {
-  //   dispatch(
-  //     toggleFavoriteStatus({
-  //       offerId: id,
-  //       status: 1,
-  //     })
-  //   );
-  // };
+  const nearbyOffers = useAppSelector(offerDetailSelectors.selectNearbyOffers);
 
   useEffect(() => {
     dispatch(fetchOfferDetail(id as string));
@@ -72,6 +62,19 @@ const Offer = () => {
     description,
   } = currentOffer;
 
+  const handleToggleFavorite = () => {
+    if (!id) {
+      return;
+    }
+    const isFavoriteStatus = isFavorite ? 0 : 1;
+    dispatch(
+      toggleFavoriteStatus({
+        offerId: id,
+        status: isFavoriteStatus,
+      })
+    );
+  };
+
   return (
     <div className="page">
       <main className="page__main page__main--offer">
@@ -98,20 +101,26 @@ const Offer = () => {
               )}
               <div className="offer__name-wrapper">
                 <h1 className="offer__name">{title}</h1>
-                <button
-                  className={`offer__bookmark-button button ${
-                    isFavorite && 'offer__bookmark-button--active'
-                  }`}
-                  type="button"
-                  // onClick={handleToggleFavorite}
-                >
-                  <svg className="offer__bookmark-icon" width={31} height={33}>
-                    <use xlinkHref="#icon-bookmark" />
-                  </svg>
-                  <span className="visually-hidden">
-                    {isFavorite ? 'In bookmarks' : 'To bookmarks'}
-                  </span>
-                </button>
+                {authorizationStatus === AuthorizationStatus.Auth && (
+                  <button
+                    className={cn(
+                      'offer__bookmark-button button',
+                      {'offer__bookmark-button--active': isFavorite})}
+                    type="button"
+                    onClick={handleToggleFavorite}
+                  >
+                    <svg
+                      className="offer__bookmark-icon"
+                      width={31}
+                      height={33}
+                    >
+                      <use xlinkHref="#icon-bookmark" />
+                    </svg>
+                    <span className="visually-hidden">
+                      {isFavorite ? 'In bookmarks' : 'To bookmarks'}
+                    </span>
+                  </button>
+                )}
               </div>
               <div className="offer__rating rating">
                 <div className="offer__stars rating__stars">
@@ -167,9 +176,7 @@ const Offer = () => {
                 </div>
               </div>
 
-              <ReviewList
-                reviews={comments}
-              />
+              <ReviewList reviews={comments} />
             </div>
           </div>
           <Map

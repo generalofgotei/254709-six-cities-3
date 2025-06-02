@@ -8,7 +8,7 @@ import Favorites from '../../pages/favorites/favorites';
 import Offer from '../../pages/offer/offer';
 import NotFound from '../../pages/not-found/not-found';
 import PrivateRoute from '../private-route/private-route';
-import { fetchAllOffers } from '../../store/thunk/offersThunk';
+import { fetchAllOffers, fetchFavoriteOffers } from '../../store/thunk/offersThunk';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { RequestStatus } from '../../const';
 import { useEffect } from 'react';
@@ -20,12 +20,10 @@ const App = (): JSX.Element => {
   const status = useAppSelector(offersSelectors.selectStatus);
 
   useEffect(() => {
-    // const email = 'sasd@mail.ru';
-    // const password = 'asd1';
     dispatch(checkAuthStatus());
-    // dispatch(loginUser({ email, password }));
     if (status === RequestStatus.idle) {
       dispatch(fetchAllOffers());
+      dispatch(fetchFavoriteOffers());
     }
   }, [dispatch, status]);
   return (
