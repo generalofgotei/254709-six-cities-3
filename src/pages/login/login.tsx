@@ -1,14 +1,19 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import { loginUser } from '../../store/thunk/authThunk';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { userSelectors } from '../../selectors/userSelectors';
-import { AuthorizationStatus } from '../../const';
+import { AuthorizationStatus, AppRoute } from '../../const';
+
+type FromState = {
+  from?: Location;
+}
 
 const Login = (): JSX.Element => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -17,6 +22,8 @@ const Login = (): JSX.Element => {
 
   const authStatus = useAppSelector(userSelectors.selectAuthStatus);
   const error = useAppSelector((state) => state.user.error);
+
+  const from = (location.state as FromState)?.from?.pathname || AppRoute.Main;
 
   const validatePassword = (pass: string): boolean => {
     const hasLetter = /[a-zA-Z]/.test(pass);
@@ -46,7 +53,7 @@ const Login = (): JSX.Element => {
 
   useEffect(() => {
     if (authStatus === AuthorizationStatus.Auth) {
-      navigate('/');
+      navigate(from);
     }
   }, [authStatus, navigate]);
 
