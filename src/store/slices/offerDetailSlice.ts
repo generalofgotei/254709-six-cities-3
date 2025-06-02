@@ -72,8 +72,13 @@ export const offerDetailSlice = createSlice({
         state.error = action.error.message || 'Comment didnt send';
       })
       .addCase(toggleFavoriteStatus.fulfilled, (state, action) => {
-        if (state.offer?.id === action.meta.arg.offerId) {
+        const offerId = action.meta.arg.offerId;
+        if (state.offer?.id === offerId) {
           state.offer.isFavorite = !state.offer.isFavorite;
+        }
+        const offerIndex = state.nearbyOffers.findIndex((item) => item.id === offerId);
+        if (offerIndex !== -1) {
+          state.nearbyOffers[offerIndex].isFavorite = !state.nearbyOffers[offerIndex].isFavorite;
         }
       });
   },
