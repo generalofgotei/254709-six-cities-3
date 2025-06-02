@@ -1,18 +1,14 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { RequestStatus } from '../../const';
 import type { OfferDetailStateType } from '../../types/offers';
-import type {
-  OfferDetailType,
-  NearbyOffersType,
-  CommentsType,
-} from '../../types/offers';
 
 import {
   fetchOfferDetail,
   fetchNearbyOffers,
   fetchComments,
-  toggleFavoriteStatus,
+  sendComment,
 } from '../thunk/offerDetailThunk';
+import { toggleFavoriteStatus } from '../thunk/offersThunk';
 
 const initialState: OfferDetailStateType = {
   offer: null,
@@ -25,24 +21,7 @@ const initialState: OfferDetailStateType = {
 export const offerDetailSlice = createSlice({
   name: 'offerDetail',
   initialState,
-  reducers: {
-    clearOfferDetail: (state) => {
-      state.offer = null;
-      state.nearbyOffers = [];
-      state.comments = [];
-      state.error = null;
-      state.status = RequestStatus.idle;
-    },
-    setOfferDetail: (state, action: PayloadAction<OfferDetailType>) => {
-      state.offer = action.payload;
-    },
-    setNearbyOffers: (state, action: PayloadAction<NearbyOffersType>) => {
-      state.nearbyOffers = action.payload;
-    },
-    setComments: (state, action: PayloadAction<CommentsType>) => {
-      state.comments = action.payload;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       // Fetch offer detail
@@ -81,25 +60,28 @@ export const offerDetailSlice = createSlice({
       .addCase(fetchComments.rejected, (state, action) => {
         state.error = action.error.message || 'Error loading comments';
       })
-      // Toggle favorite status
-      .addCase(toggleFavoriteStatus.pending, (state) => {
+      // Post comment
+      .addCase(sendComment.pending, (state) => {
         state.error = null;
+      })
+      .addCase(sendComment.fulfilled, (state, action) => {
+        state.comments.push(action.payload);
+        state.error = null;
+      })
+      .addCase(sendComment.rejected, (state, action) => {
+        state.error = action.error.message || 'Comment didnt send';
       })
       .addCase(toggleFavoriteStatus.fulfilled, (state, action) => {
-        state.offer = action.payload;
-        state.error = null;
-      })
-      .addCase(toggleFavoriteStatus.rejected, (state, action) => {
-        state.error = action.error.message || 'Error toggle favorite status';
+        const offerId = action.meta.arg.offerId;
+        if (state.offer?.id === offerId) {
+          state.offer.isFavorite = !state.offer.isFavorite;
+        }
+        const offerIndex = state.nearbyOffers.findIndex((item) => item.id === offerId);
+        if (offerIndex !== -1) {
+          state.nearbyOffers[offerIndex].isFavorite = !state.nearbyOffers[offerIndex].isFavorite;
+        }
       });
   },
 });
-
-export const {
-  clearOfferDetail,
-  setOfferDetail,
-  setNearbyOffers,
-  setComments,
-} = offerDetailSlice.actions;
 
 export default offerDetailSlice.reducer;

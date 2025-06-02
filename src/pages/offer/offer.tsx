@@ -1,15 +1,13 @@
 import { useParams } from 'react-router-dom';
 import NotFound from '../not-found/not-found';
 import ReviewList from '../../components/review-list/review-list';
-import { AuthorizationStatus } from '../../const';
 import type { OfferType } from '../../types/offers';
 import { calculateRating } from '../../utils';
 import Map from '../../components/map/map';
-import NearPlaces from '../../components/near-places/near-paces';
+import NearPlaces from '../../components/near-places/near-places';
 import { Nullable } from 'vitest';
 import { useAppSelector, useAppDispatch } from '../../store';
 import { useState, useEffect } from 'react';
-import { offersSelectors } from '../../selectors/offersSelectors';
 import { offerDetailSelectors } from '../../selectors/offerDetailSelectors';
 import {
   fetchOfferDetail,
@@ -18,50 +16,29 @@ import {
 } from '../../store/thunk/offerDetailThunk';
 import { RequestStatus } from '../../const';
 import Spinner from '../../components/spinner/spinner';
-import { toggleFavoriteStatus } from '../../store/thunk/offerDetailThunk';
+import { toggleFavorite } from '../../utils';
+import { userSelectors } from '../../selectors/userSelectors';
+import { AuthorizationStatus } from '../../const';
+import cn from 'classnames';
 
-type OfferProps = {
-  authorizationStatus: (typeof AuthorizationStatus)[keyof typeof AuthorizationStatus];
-};
-
-const Offer = ({ authorizationStatus }: OfferProps) => {
+const Offer = () => {
   const [activeOffer, setActiveOffer] = useState<Nullable<OfferType>>(null);
-
   const handleActiveOfferChange = (offer?: OfferType) => {
     setActiveOffer(offer || null);
   };
 
-  const allOffers = useAppSelector(offersSelectors.selectOffers);
-  const activeCity = useAppSelector(offersSelectors.selectCity);
-  const offers = allOffers.filter(
-    (offer: OfferType) => offer.city.name === activeCity
-  );
-
-  const id = useParams().id;
+  const { id } = useParams();
   const dispatch = useAppDispatch();
   const status = useAppSelector(offerDetailSelectors.selectStatus);
+  const authorizationStatus = useAppSelector(userSelectors.selectAuthStatus);
   const currentOffer = useAppSelector(offerDetailSelectors.selectOffer);
   const comments = useAppSelector(offerDetailSelectors.selectComments);
-  const nearbyOffers = useAppSelector(
-    offerDetailSelectors.selectNearbyOffers
-  ).slice(0, 3);
-  const favoriteStatus = useAppSelector(
-    offerDetailSelectors.selectFavoriteStatus
-  );
-  const handleToggleFavorite = () => {
-    console.log('+1')
-    dispatch(
-      toggleFavoriteStatus({
-        offerId: id,
-        status: 1,
-      })
-    );
-  };
+  const nearbyOffers = useAppSelector(offerDetailSelectors.selectNearbyOffers);
 
   useEffect(() => {
-    dispatch(fetchOfferDetail(id));
-    dispatch(fetchNearbyOffers(id));
-    dispatch(fetchComments(id));
+    dispatch(fetchOfferDetail(id as string));
+    dispatch(fetchNearbyOffers(id as string));
+    dispatch(fetchComments(id as string));
   }, [dispatch, id]);
 
   if (status === RequestStatus.loading) {
@@ -84,9 +61,10 @@ const Offer = ({ authorizationStatus }: OfferProps) => {
     images,
     description,
   } = currentOffer;
-  const neighbourhoodOffers = offers
-    .filter((offer: OfferType) => offer.id !== id)
-    .slice(0, 3);
+
+  const handleToggleFavorite = () => {
+    toggleFavorite(dispatch, id as string, isFavorite as boolean);
+  };
 
   return (
     <div className="page">
@@ -114,20 +92,26 @@ const Offer = ({ authorizationStatus }: OfferProps) => {
               )}
               <div className="offer__name-wrapper">
                 <h1 className="offer__name">{title}</h1>
-                <button
-                  className={`offer__bookmark-button button ${
-                    isFavorite && 'offer__bookmark-button--active'
-                  }`}
-                  type="button"
-                  onClick={handleToggleFavorite}
-                >
-                  <svg className="offer__bookmark-icon" width={31} height={33}>
-                    <use xlinkHref="#icon-bookmark" />
-                  </svg>
-                  <span className="visually-hidden">
-                    {isFavorite ? 'In bookmarks' : 'To bookmarks'}
-                  </span>
-                </button>
+                {authorizationStatus === AuthorizationStatus.Auth && (
+                  <button
+                    className={cn(
+                      'offer__bookmark-button button',
+                      {'offer__bookmark-button--active': isFavorite})}
+                    type="button"
+                    onClick={handleToggleFavorite}
+                  >
+                    <svg
+                      className="offer__bookmark-icon"
+                      width={31}
+                      height={33}
+                    >
+                      <use xlinkHref="#icon-bookmark" />
+                    </svg>
+                    <span className="visually-hidden">
+                      {isFavorite ? 'In bookmarks' : 'To bookmarks'}
+                    </span>
+                  </button>
+                )}
               </div>
               <div className="offer__rating rating">
                 <div className="offer__stars rating__stars">
@@ -183,10 +167,7 @@ const Offer = ({ authorizationStatus }: OfferProps) => {
                 </div>
               </div>
 
-              <ReviewList
-                authorizationStatus={authorizationStatus}
-                reviews={comments}
-              />
+              <ReviewList reviews={comments} />
             </div>
           </div>
           <Map
@@ -197,7 +178,7 @@ const Offer = ({ authorizationStatus }: OfferProps) => {
         </section>
         <div className="container">
           <NearPlaces
-            offers={neighbourhoodOffers}
+            offers={nearbyOffers}
             onActiveOfferChange={handleActiveOfferChange}
           />
         </div>

@@ -15,13 +15,13 @@ type Host = {
   name: string;
   avatarUrl: string;
   isPro: boolean;
-}
+};
 
 type User = {
   name: string;
   avatarUrl: string;
   isPro: boolean;
-}
+};
 
 export type OfferDetailType = {
   id: string;
@@ -30,7 +30,7 @@ export type OfferDetailType = {
   price: number;
   city: City;
   location: Location;
-  isFavorite: boolean;
+  isFavorite?: boolean;
   isPremium: boolean;
   rating: number;
   description: string;
@@ -40,30 +40,6 @@ export type OfferDetailType = {
   images: string[];
   maxAdults: number;
 };
-
-type NearbyOffer = {
-  id: string;
-  title: string;
-  type: string;
-  price: number;
-  city: City;
-  location: Location;
-  isFavorite: boolean;
-  isPremium: boolean;
-  rating: number;
-  previewImage: string;
-};
-
-type Comment = {
-  id: string;
-  date: string;
-  user: User;
-  comment: string;
-  rating: number;
-};
-
-export type NearbyOffersType = NearbyOffer[];
-export type CommentsType = Comment[];
 
 export type OfferType = {
   id: string;
@@ -78,21 +54,32 @@ export type OfferType = {
   rating: number;
 };
 
-type RequestStatusType = typeof RequestStatus[keyof typeof RequestStatus];
+export type OffersType = OfferType[];
+
+export type Comment = {
+  id: string;
+  date: string;
+  user: User;
+  comment: string;
+  rating: number;
+};
+
+export type CommentsType = Comment[];
+
+type RequestStatusType = (typeof RequestStatus)[keyof typeof RequestStatus];
 
 export type OffersStateType = {
   city: (typeof Cities)[number];
   offers: OffersType;
+  favoriteOffers: OffersType;
   status: RequestStatusType;
   error: string | null;
 };
 
-export type OffersType = OfferType[];
-
 export type OfferDetailStateType = {
   offer: OfferDetailType | null;
-  nearbyOffers: NearbyOffersType;
+  nearbyOffers: OffersType;
   comments: CommentsType;
-  status: typeof RequestStatus[keyof typeof RequestStatus];
+  status: (typeof RequestStatus)[keyof typeof RequestStatus];
   error: string | null;
 };

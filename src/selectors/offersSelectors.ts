@@ -6,7 +6,10 @@ export const offersSelectors = {
   selectOffers: (state: { offers: OffersStateType }) => state.offers.offers,
   selectStatus: (state: { offers: OffersStateType }) => state.offers.status,
   selectError: (state: { offers: OffersStateType }) => state.offers.error,
-  selectFavoriteOffers: (state: RootState) => state.offers.offers.filter((offer) => offer.isFavorite),
+  selectFavoriteOffers: (state: RootState) => state.offers.favoriteOffers,
+  selectFavoriteOffersCount: (state: RootState) => state.offers.favoriteOffers.length,
 };
 
-
+// selectFavoriteOffers: (state: RootState) => state.offers.favoriteOffers,
+// selectFavoriteOffersCount: (state: RootState) => state.offers.favoriteOffers.length,
+// selectFavoriteOffers: (state: RootState) => state.offers.offers.filter((offer) => offer.isFavorite),

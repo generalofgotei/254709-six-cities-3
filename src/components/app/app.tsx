@@ -1,6 +1,6 @@
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
-import { AppRoute, AuthorizationStatus } from '../../const';
+import { AppRoute } from '../../const';
 import Layout from '../layout/layout';
 import Main from '../../pages/main/main';
 import Login from '../../pages/login/login';
@@ -8,24 +8,22 @@ import Favorites from '../../pages/favorites/favorites';
 import Offer from '../../pages/offer/offer';
 import NotFound from '../../pages/not-found/not-found';
 import PrivateRoute from '../private-route/private-route';
-import { fetchAllOffers } from '../../store/thunk/offersThunk';
+import { fetchAllOffers, fetchFavoriteOffers } from '../../store/thunk/offersThunk';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { RequestStatus } from '../../const';
 import { useEffect } from 'react';
 import { offersSelectors } from '../../selectors/offersSelectors';
+import { checkAuthStatus } from '../../store/thunk/authThunk';
 
-type AppProps = {
-  authorizationStatus: (typeof AuthorizationStatus)[keyof typeof AuthorizationStatus];
-};
-
-const App = ({ authorizationStatus }: AppProps): JSX.Element => {
+const App = (): JSX.Element => {
   const dispatch = useAppDispatch();
   const status = useAppSelector(offersSelectors.selectStatus);
 
   useEffect(() => {
-    // Загружаем офферы при пуске приложения
+    dispatch(checkAuthStatus());
     if (status === RequestStatus.idle) {
       dispatch(fetchAllOffers());
+      dispatch(fetchFavoriteOffers());
     }
   }, [dispatch, status]);
   return (
@@ -34,14 +32,14 @@ const App = ({ authorizationStatus }: AppProps): JSX.Element => {
         <Routes>
           <Route
             path={AppRoute.Main}
-            element={<Layout authorizationStatus={authorizationStatus} />}
+            element={<Layout />}
           >
             <Route index element={<Main />} />
             <Route path={AppRoute.Login} element={<Login />} />
             <Route
               path={AppRoute.Favorites}
               element={
-                <PrivateRoute authorizationStatus={authorizationStatus}>
+                <PrivateRoute>
                   <Favorites />
                 </PrivateRoute>
               }
@@ -49,9 +47,7 @@ const App = ({ authorizationStatus }: AppProps): JSX.Element => {
             <Route
               path={`${AppRoute.Offer}/:id`}
               element={
-                <Offer
-                  authorizationStatus={authorizationStatus}
-                />
+                <Offer/>
               }
             />
             <Route path="*" element={<NotFound />} />

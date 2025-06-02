@@ -1,3 +1,6 @@
+import { AppDispatch } from './types/store';
+import { toggleFavoriteStatus } from './store/thunk/offersThunk';
+
 export const calculateRating = (rating: number): string =>
   `${(rating / 5) * 100}%`;
 
@@ -14,4 +17,22 @@ export const getHumanDate = (isoDate: string) => {
     dateTime,
     monthYear,
   };
+};
+
+export const toggleFavorite = (
+  dispatch: AppDispatch,
+  id: string,
+  isFavorite: boolean
+) => {
+  if (!id) {
+    return;
+  }
+
+  const isFavoriteStatus = isFavorite ? 0 : 1;
+  dispatch(
+    toggleFavoriteStatus({
+      offerId: id,
+      status: isFavoriteStatus,
+    })
+  );
 };

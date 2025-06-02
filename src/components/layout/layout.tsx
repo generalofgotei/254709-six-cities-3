@@ -1,11 +1,12 @@
 import { Outlet, useLocation, Link } from 'react-router-dom';
 import { AppRoute, AuthorizationStatus } from '../../const';
+import { useAppSelector, useAppDispatch } from '../../store';
+import { userSelectors } from '../../selectors/userSelectors';
+import { offersSelectors } from '../../selectors/offersSelectors';
 import Logo from '../logo/logo';
+import { logoutUser } from '../../store/thunk/authThunk';
 
 type PathNameType = string;
-type LayoutProps = {
-  authorizationStatus: typeof AuthorizationStatus[keyof typeof AuthorizationStatus];
-};
 
 const getLayoutState = (pathname: PathNameType) => {
   let mainClassName = '';
@@ -27,9 +28,19 @@ const getLayoutState = (pathname: PathNameType) => {
   return { mainClassName, linkClassName, shouldRenderUser };
 };
 
-const Layout = ({ authorizationStatus }: LayoutProps): JSX.Element => {
+const Layout = (): JSX.Element => {
   const { pathname } = useLocation();
-  const { mainClassName, linkClassName, shouldRenderUser } = getLayoutState(pathname);
+  const { mainClassName, linkClassName, shouldRenderUser } =
+    getLayoutState(pathname);
+  const authorizationStatus = useAppSelector(userSelectors.selectAuthStatus);
+  const userEmail = useAppSelector(userSelectors.selectEmail);
+  const favoriteOffersCount = useAppSelector(offersSelectors.selectFavoriteOffersCount);
+
+
+  const dispatch = useAppDispatch();
+  const handleLogout = () => {
+    dispatch(logoutUser());
+  };
 
   return (
     <div className={mainClassName}>
@@ -50,13 +61,17 @@ const Layout = ({ authorizationStatus }: LayoutProps): JSX.Element => {
                       >
                         <div className="header__avatar-wrapper user__avatar-wrapper"></div>
                         <span className="header__user-name user__name">
-                          Oliver.conner@gmail.com
+                          {userEmail}
                         </span>
-                        <div className="header__favorite-count">3</div>
+                        <div className="header__favorite-count">{favoriteOffersCount}</div>
                       </Link>
                     </li>
                     <li className="header__nav-item">
-                      <a className="header__nav-link" href="#">
+                      <a
+                        className="header__nav-link"
+                        onClick={handleLogout}
+                        type="button"
+                      >
                         <span className="header__signout">Sign out</span>
                       </a>
                     </li>
