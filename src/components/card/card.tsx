@@ -29,6 +29,10 @@ const Card = ({
   // Вспомнить на 100% логику работы кнопок
   const handleMouseOn = () => handleHover && handleHover(offer);
   const handleMouseOff = () => handleHover && handleHover();
+  const handleToggleFavorite = (evt) => {
+    evt.preventDefault();
+    console.log(evt.currentTarget.name);
+  }
 
   return (
     <article
@@ -63,9 +67,9 @@ const Card = ({
         </Link>
       </div>
       <div
-        className={`${
-          isFavoritePage && 'favorites__card-info'
-        } place-card__info`}
+        className={cn('place-card__info', {
+          'favorites__card-info': isFavoritePage,
+        })}
       >
         <div className="place-card__price-wrapper">
           <div className="place-card__price">
@@ -73,9 +77,11 @@ const Card = ({
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
           <button
-            className={`place-card__bookmark-button button ${
-              isFavorite && 'place-card__bookmark-button--active'
-            }`}
+            name={id}
+            onClick={handleToggleFavorite}
+            className={cn('place-card__bookmark-button button', {
+              'place-card__bookmark-button--active': isFavorite,
+            })}
           >
             <svg className="place-card__bookmark-icon" width="18" height="19">
               <use xlinkHref="#icon-bookmark"></use>
