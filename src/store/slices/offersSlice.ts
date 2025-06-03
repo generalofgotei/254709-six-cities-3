@@ -62,7 +62,6 @@ export const offersSlice = createSlice({
         if (isFavorite) {
           state.favoriteOffers.push({ ...state.offers[offerIndex], isFavorite: true });
         } else {
-          // Удаляем из избранного
           state.favoriteOffers = state.favoriteOffers.filter((item) => item.id !== offer.id);
         }
       })

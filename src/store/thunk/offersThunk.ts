@@ -33,7 +33,6 @@ export const toggleFavoriteStatus = createAsyncThunk<
   'favorite/toggleStatus',
   async ({ offerId, status }, { extra: api }) => {
     try {
-      // Отправляем запрос на изменение статуса
       const response = await api.post<OfferType>(
         `${Endpoint.Favorite}/${offerId}/${status}`
       );
