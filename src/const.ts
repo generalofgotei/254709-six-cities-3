@@ -55,3 +55,5 @@ export const RequestStatus = {
   success: 'Success',
   failed: 'Failed'
 } as const;
+
+export const MIN_COMMENT_LENGTH = 50;

@@ -9,7 +9,3 @@ export const offersSelectors = {
   selectFavoriteOffers: (state: RootState) => state.offers.favoriteOffers,
   selectFavoriteOffersCount: (state: RootState) => state.offers.favoriteOffers.length,
 };
-
-// selectFavoriteOffers: (state: RootState) => state.offers.favoriteOffers,
-// selectFavoriteOffersCount: (state: RootState) => state.offers.favoriteOffers.length,
-// selectFavoriteOffers: (state: RootState) => state.offers.offers.filter((offer) => offer.isFavorite),

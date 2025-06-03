@@ -2,12 +2,11 @@ import { Link } from 'react-router-dom';
 import { AppRoute } from '../../const';
 import { calculateRating } from '../../utils';
 import type { OfferType } from '../../types/offers';
-import { useAppDispatch } from '../../store';
-import { toggleFavorite } from '../../utils';
 import { useAppSelector } from '../../store';
 import { AuthorizationStatus } from '../../const';
 import { userSelectors } from '../../selectors/userSelectors';
 import cn from 'classnames';
+import FavoriteButton from '../favorite-button/favorite-button';
 
 type CardProps = {
   offer: OfferType;
@@ -30,16 +29,11 @@ const Card = ({
     title,
     type,
   } = offer;
-  const dispatch = useAppDispatch();
   const authorizationStatus = useAppSelector(userSelectors.selectAuthStatus);
 
   // Вспомнить на 100% логику работы кнопок
   const handleMouseOn = () => handleHover && handleHover(offer);
   const handleMouseOff = () => handleHover && handleHover();
-
-  const handleToggleFavorite = () => {
-    toggleFavorite(dispatch, id, isFavorite);
-  };
 
   return (
     <article
@@ -84,20 +78,7 @@ const Card = ({
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
           {authorizationStatus === AuthorizationStatus.Auth && (
-            <button
-              name={id}
-              onClick={handleToggleFavorite}
-              className={cn('place-card__bookmark-button button', {
-                'place-card__bookmark-button--active': isFavorite,
-              })}
-            >
-              <svg className="place-card__bookmark-icon" width="18" height="19">
-                <use xlinkHref="#icon-bookmark"></use>
-              </svg>
-              <span className="visually-hidden">
-                {isFavorite ? 'In bookmarks' : 'To bookmarks'}
-              </span>
-            </button>
+            <FavoriteButton isCard id={id} isFavorite={isFavorite}/>
           )}
         </div>
         <div className="place-card__rating rating">

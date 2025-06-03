@@ -3,6 +3,7 @@ import { rating } from '../../const';
 import { sendComment } from '../../store/thunk/offerDetailThunk';
 import { useAppDispatch } from '../../store';
 import { useParams } from 'react-router-dom';
+import { MIN_COMMENT_LENGTH } from '../../const';
 
 type handleChangeType = ReactEventHandler<
   HTMLInputElement | HTMLTextAreaElement
@@ -77,7 +78,7 @@ const ReviewForm = (): JSX.Element => {
         <button
           className="reviews__submit form__submit button"
           type="submit"
-          disabled={review.comment.length < 50 || review.rating === 0}
+          disabled={review.comment.length < MIN_COMMENT_LENGTH || review.rating === 0}
         >
           Submit
         </button>

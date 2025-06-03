@@ -16,10 +16,9 @@ import {
 } from '../../store/thunk/offerDetailThunk';
 import { RequestStatus } from '../../const';
 import Spinner from '../../components/spinner/spinner';
-import { toggleFavorite } from '../../utils';
 import { userSelectors } from '../../selectors/userSelectors';
 import { AuthorizationStatus } from '../../const';
-import cn from 'classnames';
+import FavoriteButton from '../../components/favorite-button/favorite-button';
 
 const Offer = () => {
   const [activeOffer, setActiveOffer] = useState<Nullable<OfferType>>(null);
@@ -62,10 +61,6 @@ const Offer = () => {
     description,
   } = currentOffer;
 
-  const handleToggleFavorite = () => {
-    toggleFavorite(dispatch, id as string, isFavorite as boolean);
-  };
-
   return (
     <div className="page">
       <main className="page__main page__main--offer">
@@ -92,25 +87,8 @@ const Offer = () => {
               )}
               <div className="offer__name-wrapper">
                 <h1 className="offer__name">{title}</h1>
-                {authorizationStatus === AuthorizationStatus.Auth && (
-                  <button
-                    className={cn(
-                      'offer__bookmark-button button',
-                      {'offer__bookmark-button--active': isFavorite})}
-                    type="button"
-                    onClick={handleToggleFavorite}
-                  >
-                    <svg
-                      className="offer__bookmark-icon"
-                      width={31}
-                      height={33}
-                    >
-                      <use xlinkHref="#icon-bookmark" />
-                    </svg>
-                    <span className="visually-hidden">
-                      {isFavorite ? 'In bookmarks' : 'To bookmarks'}
-                    </span>
-                  </button>
+                {authorizationStatus === AuthorizationStatus.Auth && id && isFavorite && (
+                  <FavoriteButton isCard={false} id={id} isFavorite={isFavorite}/>
                 )}
               </div>
               <div className="offer__rating rating">
