@@ -10,6 +10,7 @@ import { offersSelectors } from '../../selectors/offersSelectors';
 import { RequestStatus } from '../../const';
 import Spinner from '../../components/spinner/spinner';
 import { MainEmpty } from '../../components/main-empty/main-empty';
+import cn from 'classnames';
 
 const Main = memo((): JSX.Element => {
   const [activeOffer, setActiveOffer] = useState<Nullable<OfferType>>(null);
@@ -34,7 +35,11 @@ const Main = memo((): JSX.Element => {
   }
 
   return (
-    <div className="page page--gray page--main">
+    <div
+      className={cn('page page--gray page--main', {
+        'page__main--index-empty': activeOffers.length === 0,
+      })}
+    >
       <Helmet>
         <title>6 cities</title>
       </Helmet>
