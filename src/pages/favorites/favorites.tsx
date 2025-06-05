@@ -4,19 +4,31 @@ import FavoritesEmpty from '../../components/favorites-empty/favorites-empty';
 import { Helmet } from 'react-helmet-async';
 import { useAppSelector } from '../../store';
 import { offersSelectors } from '../../selectors/offersSelectors';
+import { memo, useMemo } from 'react';
 
-const Favorites = (): JSX.Element => {
+const Favorites = memo((): JSX.Element => {
   const favoriteOffersCount = useAppSelector(offersSelectors.selectFavoriteOffersCount);
+
+  const hasFavorites = favoriteOffersCount > 0;
+
+  const mainContent = useMemo(() => {
+    if (hasFavorites) {
+      return <FavoritesMain />;
+    }
+    return <FavoritesEmpty />;
+  }, [hasFavorites]);
+
   return (
     <div className="page">
       <Helmet>
         <title>6 cities: favorites</title>
       </Helmet>
-      {favoriteOffersCount > 0 && <FavoritesMain />}
-      {favoriteOffersCount === 0 && <FavoritesEmpty />}
+      {mainContent}
       <Footer />
     </div>
   );
-};
+});
+
+Favorites.displayName = 'Favorites';
 
 export default Favorites;

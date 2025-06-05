@@ -3,6 +3,7 @@ import CityItem from '../city-item/city-item';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { offersSelectors } from '../../selectors/offersSelectors';
 import { setCity } from '../../store/slices/offersSlice';
+import { useCallback } from 'react';
 
 type CityName = (typeof Cities)[number];
 
@@ -10,9 +11,9 @@ const NavItem = (): JSX.Element => {
   const dispatch = useAppDispatch();
   const activeCity = useAppSelector(offersSelectors.selectCity);
 
-  const handleActiveCityChange = (city: CityName) => {
+  const handleActiveCityChange = useCallback((city: CityName) => {
     dispatch(setCity(city));
-  };
+  }, [dispatch]);
 
   return (
     <div className="tabs">

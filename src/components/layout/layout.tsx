@@ -5,6 +5,7 @@ import { userSelectors } from '../../selectors/userSelectors';
 import { offersSelectors } from '../../selectors/offersSelectors';
 import Logo from '../logo/logo';
 import { logoutUser } from '../../store/thunk/authThunk';
+import { useCallback } from 'react';
 
 type PathNameType = string;
 
@@ -36,11 +37,11 @@ const Layout = (): JSX.Element => {
   const userEmail = useAppSelector(userSelectors.selectEmail);
   const favoriteOffersCount = useAppSelector(offersSelectors.selectFavoriteOffersCount);
 
-
   const dispatch = useAppDispatch();
-  const handleLogout = () => {
+
+  const handleLogout = useCallback(() => {
     dispatch(logoutUser());
-  };
+  }, [dispatch]);
 
   return (
     <div className={mainClassName}>

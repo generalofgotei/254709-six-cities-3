@@ -3,7 +3,7 @@ import Card from '../card/card';
 import { useAppSelector } from '../../store';
 import { sortingOptions } from '../../const';
 import { offersSelectors } from '../../selectors/offersSelectors';
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import cn from 'classnames';
 
 type OfferSectionProps = {
@@ -29,18 +29,52 @@ const OfferSection = ({
 }: OfferSectionProps): JSX.Element => {
   const [activeSorting, setActiveSorting] = useState<string>(sortingOptions.popular);
   const [isSortingListOpen, setSortingListOpen] = useState(false);
-  const handleSortingListToggle = () => setSortingListOpen(!isSortingListOpen);
-  const handleSortingChange = (sorting: string) => {
+
+  const handleSortingListToggle = useCallback(() => {
+    setSortingListOpen((prev) => !prev);
+  }, []);
+
+  const handleSortingChange = useCallback((sorting: string) => {
     setActiveSorting(sorting);
-    handleSortingListToggle();
-  };
+    setSortingListOpen(false);
+  }, []);
 
   const activeCity = useAppSelector(offersSelectors.selectCity);
-  const activeOffers = useAppSelector(offersSelectors.selectOffers).filter(
-    (offer) => offer.city.name === activeCity
+  const allOffers = useAppSelector(offersSelectors.selectOffers);
+
+  const activeOffers = useMemo(() =>
+    allOffers.filter((offer) => offer.city.name === activeCity), [allOffers, activeCity]
   );
 
-  const sortedOffers = sortOffers(activeOffers, activeSorting);
+
+  const sortedOffers = useMemo(() =>
+    sortOffers(activeOffers, activeSorting), [activeOffers, activeSorting]
+  );
+
+  const sortingOptionsList = useMemo(() =>
+    Object.values(sortingOptions).map((option) => (
+      <li
+        key={option}
+        className={cn('places__option', {
+          'places__option--active': activeSorting === option,
+        })}
+        tabIndex={0}
+        onClick={() => handleSortingChange(option)}
+      >
+        {option}
+      </li>
+    )), [activeSorting, handleSortingChange]
+  );
+
+  const offerCards = useMemo(() =>
+    sortedOffers.map((offer) => (
+      <Card
+        key={offer.id}
+        offer={offer}
+        handleHover={onActiveOfferChange}
+      />
+    )), [sortedOffers, onActiveOfferChange]
+  );
 
   return (
     <section className="cities__places places">
@@ -53,7 +87,7 @@ const OfferSection = ({
         <span
           className="places__sorting-type"
           tabIndex={0}
-          onClick={() => handleSortingListToggle()}
+          onClick={handleSortingListToggle}
         >
           {activeSorting}
           <svg className="places__sorting-arrow" width="7" height="4">
@@ -65,28 +99,11 @@ const OfferSection = ({
             'places__options--opened': isSortingListOpen,
           })}
         >
-          {Object.values(sortingOptions).map((option) => (
-            <li
-              key={option}
-              className={cn('places__option', {
-                'places__option--active': activeSorting === option,
-              })}
-              tabIndex={0}
-              onClick={() => handleSortingChange(option)}
-            >
-              {option}
-            </li>
-          ))}
+          {sortingOptionsList}
         </ul>
       </form>
       <div className="cities__places-list places__list tabs__content">
-        {sortedOffers.map((offer) => (
-          <Card
-            key={offer.id}
-            offer={offer}
-            handleHover={onActiveOfferChange}
-          />
-        ))}
+        {offerCards}
       </div>
     </section>
   );
