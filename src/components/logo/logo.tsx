@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../../const';
-
+import { memo } from 'react';
 
 type LogoProps = {
   logoClassName: string;
 }
 
-const Logo = ({logoClassName}: LogoProps): JSX.Element => (
+const Logo = memo<LogoProps>(({logoClassName}: LogoProps): JSX.Element => (
   <Link className={logoClassName} to={AppRoute.Main}>
     <img
       className="header__logo"
@@ -16,6 +16,8 @@ const Logo = ({logoClassName}: LogoProps): JSX.Element => (
       height="41"
     />
   </Link>
-);
+));
+
+Logo.displayName = 'Logo';
 
 export default Logo;

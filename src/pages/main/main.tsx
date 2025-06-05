@@ -3,25 +3,31 @@ import Map from '../../components/map/map';
 import OfferSection from '../../components/offer-section/offer-section';
 import { Helmet } from 'react-helmet-async';
 import { useAppSelector } from '../../store';
-import { useState } from 'react';
+import { useState, useCallback, useMemo, memo } from 'react';
 import { Nullable } from 'vitest';
 import type { OfferType } from '../../types/offers';
 import { offersSelectors } from '../../selectors/offersSelectors';
 import { RequestStatus } from '../../const';
 import Spinner from '../../components/spinner/spinner';
 
-
-const Main = (): JSX.Element => {
+const Main = memo((): JSX.Element => {
   const [activeOffer, setActiveOffer] = useState<Nullable<OfferType>>(null);
 
-  const handleActiveOfferChange = (offer?: OfferType) => {
+  const handleActiveOfferChange = useCallback((offer?: OfferType) => {
     setActiveOffer(offer || null);
-  };
+  }, []);
+
   const status = useAppSelector(offersSelectors.selectStatus);
   const activeCity = useAppSelector(offersSelectors.selectCity);
-  const activeOffers = useAppSelector(offersSelectors.selectOffers).filter((offer) => offer.city.name === activeCity);
+  const allOffers = useAppSelector(offersSelectors.selectOffers);
 
-  if (status === RequestStatus.loading) {
+  const activeOffers = useMemo(() =>
+    allOffers.filter((offer) => offer.city.name === activeCity), [allOffers, activeCity]
+  );
+
+  const isLoading = status === RequestStatus.loading;
+
+  if (isLoading) {
     return <Spinner />;
   }
 
@@ -56,6 +62,8 @@ const Main = (): JSX.Element => {
       </main>
     </div>
   );
-};
+});
+
+Main.displayName = 'Main';
 
 export default Main;

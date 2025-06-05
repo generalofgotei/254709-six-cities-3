@@ -1,13 +1,17 @@
 import { ReviewType } from '../../types/reviews';
-import { calculateRating } from '../../utils';
-import { getHumanDate } from '../../utils';
+import { calculateRating, getHumanDate } from '../../utils';
+import { memo, useMemo } from 'react';
 
 type ReviewItemProps = {
   review: ReviewType;
 };
 
-const ReviewItem = ({ review }: ReviewItemProps): JSX.Element => {
+const ReviewItem = memo<ReviewItemProps>(({ review }: ReviewItemProps): JSX.Element => {
   const { date, user, comment, rating } = review;
+
+  const ratingWidth = useMemo(() => calculateRating(rating), [rating]);
+  const humanDate = useMemo(() => getHumanDate(date), [date]);
+
   return (
     <li className="reviews__item">
       <div className="reviews__user user">
@@ -25,19 +29,21 @@ const ReviewItem = ({ review }: ReviewItemProps): JSX.Element => {
       <div className="reviews__info">
         <div className="reviews__rating rating">
           <div className="reviews__stars rating__stars">
-            <span style={{ width: `${calculateRating(rating)}` }} />
+            <span style={{ width: ratingWidth }} />
             <span className="visually-hidden">Rating</span>
           </div>
         </div>
         <p className="reviews__text">
           {comment}
         </p>
-        <time className="reviews__time" dateTime={getHumanDate(date).dateTime}>
-          {getHumanDate(date).monthYear}
+        <time className="reviews__time" dateTime={humanDate.dateTime}>
+          {humanDate.monthYear}
         </time>
       </div>
     </li>
   );
-};
+});
+
+ReviewItem.displayName = 'ReviewItem';
 
 export default ReviewItem;

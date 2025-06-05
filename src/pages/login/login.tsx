@@ -1,6 +1,6 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import { useState, useEffect, ChangeEvent, FormEvent, useCallback, useMemo, memo } from 'react';
 import { loginUser } from '../../store/thunk/authThunk';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { userSelectors } from '../../selectors/userSelectors';
@@ -10,7 +10,7 @@ type FromState = {
   from?: Location;
 }
 
-const Login = (): JSX.Element => {
+const Login = memo((): JSX.Element => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -23,24 +23,27 @@ const Login = (): JSX.Element => {
   const authStatus = useAppSelector(userSelectors.selectAuthStatus);
   const error = useAppSelector((state) => state.user.error);
 
-  const from = (location.state as FromState)?.from?.pathname || AppRoute.Main;
+  const from = useMemo(() =>
+    (location.state as FromState)?.from?.pathname || AppRoute.Main, [location.state]
+  );
 
-  const validatePassword = (pass: string): boolean => {
+  const validatePassword = useCallback((pass: string): boolean => {
     const hasLetter = /[a-zA-Z]/.test(pass);
     const hasDigit = /\d/.test(pass);
     const hasSpace = pass.includes(' ');
     return hasLetter && hasDigit && !hasSpace;
-  };
-  const handleFormDataChange = (evt: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = evt.currentTarget;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-    setValidationError('');
-  };
+  }, []);
 
-  const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
+  const handleFormDataChange = useCallback((evt: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = evt.currentTarget;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    setValidationError('');
+  }, []);
+
+  const handleSubmit = useCallback((evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
 
     if (!validatePassword(formData.password)) {
@@ -49,13 +52,15 @@ const Login = (): JSX.Element => {
     }
 
     dispatch(loginUser(formData));
-  };
+  }, [formData, validatePassword, dispatch]);
+
+  const isAuthenticated = authStatus === AuthorizationStatus.Auth;
 
   useEffect(() => {
-    if (authStatus === AuthorizationStatus.Auth) {
+    if (isAuthenticated) {
       navigate(from);
     }
-  }, [authStatus, navigate]);
+  }, [isAuthenticated, navigate, from]);
 
   return (
     <div className="page page--gray page--login">
@@ -132,6 +137,8 @@ const Login = (): JSX.Element => {
       </main>
     </div>
   );
-};
+});
+
+Login.displayName = 'Login';
 
 export default Login;

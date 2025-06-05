@@ -30,7 +30,7 @@ export type OfferDetailType = {
   price: number;
   city: City;
   location: Location;
-  isFavorite?: boolean;
+  isFavorite: boolean;
   isPremium: boolean;
   rating: number;
   description: string;

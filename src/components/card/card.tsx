@@ -7,6 +7,7 @@ import { AuthorizationStatus } from '../../const';
 import { userSelectors } from '../../selectors/userSelectors';
 import cn from 'classnames';
 import FavoriteButton from '../favorite-button/favorite-button';
+import { memo, useMemo, useCallback } from 'react';
 
 type CardProps = {
   offer: OfferType;
@@ -14,88 +15,130 @@ type CardProps = {
   isFavoritePage?: boolean;
 };
 
-const Card = ({
-  offer,
-  handleHover,
-  isFavoritePage,
-}: CardProps): JSX.Element => {
-  const {
-    isFavorite,
-    id,
-    isPremium,
-    previewImage,
-    price,
-    rating,
-    title,
-    type,
-  } = offer;
-  const authorizationStatus = useAppSelector(userSelectors.selectAuthStatus);
+const Card = memo<CardProps>(
+  ({ offer, handleHover, isFavoritePage = false }: CardProps): JSX.Element => {
+    const {
+      isFavorite,
+      id,
+      isPremium,
+      previewImage,
+      price,
+      rating,
+      title,
+      type,
+    } = offer;
 
-  // Вспомнить на 100% логику работы кнопок
-  const handleMouseOn = () => handleHover && handleHover(offer);
-  const handleMouseOff = () => handleHover && handleHover();
+    const authorizationStatus = useAppSelector(userSelectors.selectAuthStatus);
 
-  return (
-    <article
-      className={cn(
-        'place-card',
-        { 'favorites__card': isFavoritePage },
-        { 'cities__card': !isFavoritePage }
-      )}
-      onMouseEnter={handleMouseOn}
-      onMouseLeave={handleMouseOff}
-    >
-      {isPremium && (
-        <div className="place-card__mark">
-          <span>Premium</span>
-        </div>
-      )}
-      <div
-        className={cn(
-          'place-card__image-wrapper',
-          { 'favorites__image-wrapper': isFavoritePage },
-          { 'cities__image-wrapper': !isFavoritePage }
+    const handleMouseOn = useCallback(() => {
+      handleHover?.(offer);
+    }, [handleHover, offer]);
+
+    const handleMouseOff = useCallback(() => {
+      handleHover?.();
+    }, [handleHover]);
+
+    const cardClasses = useMemo(
+      () =>
+        cn('place-card', {
+          'favorites__card': isFavoritePage,
+          'cities__card': !isFavoritePage,
+        }),
+      [isFavoritePage]
+    );
+
+    const imageWrapperClasses = useMemo(
+      () =>
+        cn('place-card__image-wrapper', {
+          'favorites__image-wrapper': isFavoritePage,
+          'cities__image-wrapper': !isFavoritePage,
+        }),
+      [isFavoritePage]
+    );
+
+    const cardInfoClasses = useMemo(
+      () => cn('place-card__info', { 'favorites__card-info': isFavoritePage }),
+      [isFavoritePage]
+    );
+
+    const imageSize = useMemo(
+      () => ({
+        width: isFavoritePage ? 150 : 260,
+        height: isFavoritePage ? 110 : 200,
+      }),
+      [isFavoritePage]
+    );
+
+    const ratingWidth = useMemo(() => calculateRating(rating), [rating]);
+    const capitalizedType = useMemo(
+      () => type.charAt(0).toUpperCase() + type.slice(1),
+      [type]
+    );
+
+    const offerLink = useMemo(() => `${AppRoute.Offer}/${id}`, [id]);
+
+    const isAuthenticated = authorizationStatus === AuthorizationStatus.Auth;
+
+    const formattedPrice = useMemo(() => `€${price}`, [price]);
+
+    return (
+      <article
+        className={cardClasses}
+        onMouseEnter={handleMouseOn}
+        onMouseLeave={handleMouseOff}
+      >
+        {isPremium && (
+          <div className="place-card__mark">
+            <span>Premium</span>
+          </div>
         )}
-      >
-        <Link to={`${AppRoute.Offer}/${id}`}>
-          <img
-            className="place-card__image"
-            src={previewImage}
-            width={isFavoritePage ? 150 : 260}
-            height={isFavoritePage ? 110 : 200}
-            alt={title}
-          />
-        </Link>
-      </div>
-      <div
-        className={cn('place-card__info', {
-          'favorites__card-info': isFavoritePage,
-        })}
-      >
-        <div className="place-card__price-wrapper">
-          <div className="place-card__price">
-            <b className="place-card__price-value">&euro;{price}</b>
-            <span className="place-card__price-text">&#47;&nbsp;night</span>
-          </div>
-          {authorizationStatus === AuthorizationStatus.Auth && (
-            <FavoriteButton isCard id={id} isFavorite={isFavorite}/>
-          )}
+
+        <div className={imageWrapperClasses}>
+          <Link to={offerLink}>
+            <img
+              className="place-card__image"
+              src={previewImage}
+              width={imageSize.width}
+              height={imageSize.height}
+              alt={title}
+            />
+          </Link>
         </div>
-        <div className="place-card__rating rating">
-          <div className="place-card__stars rating__stars">
-            <span style={{ width: `${calculateRating(rating)}` }} />
-            <span className="visually-hidden">Rating</span>
+
+        <div className={cardInfoClasses}>
+          <div className="place-card__price-wrapper">
+            <div className="place-card__price">
+              <b className="place-card__price-value">{formattedPrice}</b>
+              <span className="place-card__price-text">&#47;&nbsp;night</span>
+            </div>
+            {isAuthenticated && (
+              <FavoriteButton
+                isCard
+                id={id}
+                isFavorite={isFavorite}
+                disabled={false}
+              />
+            )}
           </div>
+
+          <div className="place-card__rating rating">
+            <div className="place-card__stars rating__stars">
+              <span style={{ width: ratingWidth }} />
+              <span className="visually-hidden">Rating</span>
+            </div>
+          </div>
+
+          <h2 className="place-card__name">
+            <Link to={offerLink}>{title}</Link>
+          </h2>
+
+          <p className="place-card__type">{capitalizedType}</p>
         </div>
-        <h2 className="place-card__name">
-          <a href="#">{title}</a>
-        </h2>
-        <p className="place-card__type">
-          {type.charAt(0).toUpperCase() + type.slice(1)}
-        </p>
-      </div>
-    </article>
-  );
-};
+      </article>
+    );
+  }
+);
+
+Card.displayName = 'Card';
 
 export default Card;

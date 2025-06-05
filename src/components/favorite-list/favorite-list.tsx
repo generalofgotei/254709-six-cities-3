@@ -2,6 +2,7 @@ import { FavoriteItem } from '../favorite-item/favorite-item';
 import { useAppSelector } from '../../store';
 import { offersSelectors } from '../../selectors/offersSelectors';
 import type { OffersType } from '../../types/offers';
+import { useMemo } from 'react';
 
 type OffersByCityType = {
   [city: string]: OffersType;
@@ -10,7 +11,7 @@ type OffersByCityType = {
 export const FavoriteList = (): JSX.Element => {
   const favoriteOffers = useAppSelector(offersSelectors.selectFavoriteOffers);
 
-  const offersByCity: OffersByCityType =
+  const offersByCity: OffersByCityType = useMemo(() =>
     favoriteOffers.reduce((acc, offer) => {
       const cityName = offer.city.name;
       if (!acc[cityName]) {
@@ -18,18 +19,24 @@ export const FavoriteList = (): JSX.Element => {
       }
       acc[cityName].push(offer);
       return acc;
-    }, {} as OffersByCityType);
+    }, {} as OffersByCityType), [favoriteOffers]
+  );
 
-  const cities = Object.keys(offersByCity);
+  const cities = useMemo(() => Object.keys(offersByCity), [offersByCity]);
+
+  const favoriteItems = useMemo(() =>
+    cities.map((cityName) => (
+      <FavoriteItem
+        key={cityName}
+        cityName={cityName}
+        offers={offersByCity[cityName]}
+      />
+    )), [cities, offersByCity]
+  );
+
   return (
     <ul className="favorites__list">
-      {cities.map((cityName) => (
-        <FavoriteItem
-          key={cityName}
-          cityName={cityName}
-          offers={offersByCity[cityName]}
-        />
-      ))}
+      {favoriteItems}
     </ul>
   );
 };
