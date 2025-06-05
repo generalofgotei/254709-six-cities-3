@@ -25,7 +25,6 @@ const CityItem = memo<CityItemProps>(({
           'locations__item-link tabs__item',
           {'tabs__item--active': activeCity === city}
         )}
-        href="#"
         onClick={handleClick}
       >
         <span>{city}</span>

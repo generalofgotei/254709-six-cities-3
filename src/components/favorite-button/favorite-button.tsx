@@ -31,11 +31,10 @@ const FavoriteButton = memo<FavoriteButtonProps>(
     const isAuthenticated = (authorizationStatus === AuthorizationStatus.Auth);
 
     const handleToggleFavorite = useCallback(() => {
+      toggleFavorite(dispatch, id, isFavorite);
       if (!isAuthenticated) {
         navigate(AppRoute.Login);
-        return;
       }
-      toggleFavorite(dispatch, id, isFavorite);
     }, [dispatch, id, isFavorite, isAuthenticated, navigate]);
 
     const buttonClasses = useMemo(

@@ -42,7 +42,7 @@ const ReviewForm = (): JSX.Element => {
       await dispatch(sendComment({ offerId, review })).unwrap();
       setReview({ rating: 0, comment: '' });
     } catch (error) {
-      throw new Error('Error');
+      console.error('Failed to send comment:', error);
     } finally {
       setIsSubmitting(false);
     }

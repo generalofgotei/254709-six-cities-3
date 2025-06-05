@@ -39,7 +39,8 @@ const Layout = (): JSX.Element => {
 
   const dispatch = useAppDispatch();
 
-  const handleLogout = useCallback(() => {
+  const handleLogout = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
     dispatch(logoutUser());
   }, [dispatch]);
 

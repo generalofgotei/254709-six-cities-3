@@ -70,11 +70,11 @@ export const offerDetailSlice = createSlice({
       .addCase(toggleFavoriteStatus.fulfilled, (state, action) => {
         const offerId = action.meta.arg.offerId;
         if (state.offer?.id === offerId) {
-          state.offer.isFavorite = !state.offer.isFavorite;
+          state.offer.isFavorite = action.payload.isFavorite;
         }
         const offerIndex = state.nearbyOffers.findIndex((item) => item.id === offerId);
         if (offerIndex !== -1) {
-          state.nearbyOffers[offerIndex].isFavorite = !state.nearbyOffers[offerIndex].isFavorite;
+          state.nearbyOffers[offerIndex].isFavorite = action.payload.isFavorite;
         }
       });
   },

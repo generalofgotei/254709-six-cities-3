@@ -19,6 +19,8 @@ type FromState = {
   from?: Location;
 };
 
+const getRandom = () => Cities[Math.floor(Math.random() * Cities.length)];
+
 const Login = memo((): JSX.Element => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -38,7 +40,7 @@ const Login = memo((): JSX.Element => {
   );
 
   const randomCity = useMemo(
-    () => Cities[Math.floor(Math.random() * Cities.length)],
+    getRandom,
     []
   );
 
