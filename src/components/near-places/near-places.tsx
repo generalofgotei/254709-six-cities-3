@@ -1,21 +1,19 @@
 import Card from '../card/card';
-import { OffersType, OfferType } from '../../types/offers';
+import { OffersType } from '../../types/offers';
 import { useMemo } from 'react';
 
 type NearPlacesProps = {
   offers: OffersType;
-  onActiveOfferChange: (offer?: OfferType) => void;
 }
 
-const NearPlaces = ({offers, onActiveOfferChange}: NearPlacesProps): JSX.Element => {
+const NearPlaces = ({offers}: NearPlacesProps): JSX.Element => {
   const offerCards = useMemo(() =>
     offers.map((offer) => (
       <Card
         key={offer.id}
         offer={offer}
-        handleHover={onActiveOfferChange}
       />
-    )), [offers, onActiveOfferChange]
+    )), [offers]
   );
 
   return (

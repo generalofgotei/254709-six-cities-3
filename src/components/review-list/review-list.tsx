@@ -10,13 +10,21 @@ type ReviewListProps = {
   reviews: ReviewsType;
 };
 
+const MAX_REVIEWS_COUNT = 10;
+
 const ReviewList = ({ reviews }: ReviewListProps): JSX.Element => {
   const authorizationStatus = useAppSelector(userSelectors.selectAuthStatus);
 
+  const sortedAndLimitedReviews = useMemo(() =>
+    [...reviews]
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .slice(0, MAX_REVIEWS_COUNT)
+  , [reviews]);
+
   const reviewItems = useMemo(() =>
-    reviews.map((review) => (
+    sortedAndLimitedReviews.map((review) => (
       <ReviewItem key={review.id} review={review} />
-    )), [reviews]
+    )), [sortedAndLimitedReviews]
   );
 
   const isAuthenticated = authorizationStatus === AuthorizationStatus.Auth;

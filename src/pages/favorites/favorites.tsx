@@ -5,9 +5,12 @@ import { Helmet } from 'react-helmet-async';
 import { useAppSelector } from '../../store';
 import { offersSelectors } from '../../selectors/offersSelectors';
 import { memo, useMemo } from 'react';
+import cn from 'classnames';
 
 const Favorites = memo((): JSX.Element => {
-  const favoriteOffersCount = useAppSelector(offersSelectors.selectFavoriteOffersCount);
+  const favoriteOffersCount = useAppSelector(
+    offersSelectors.selectFavoriteOffersCount
+  );
 
   const hasFavorites = favoriteOffersCount > 0;
 
@@ -19,7 +22,7 @@ const Favorites = memo((): JSX.Element => {
   }, [hasFavorites]);
 
   return (
-    <div className="page">
+    <div className={cn('page', { 'page--favorites-empty': !hasFavorites })}>
       <Helmet>
         <title>6 cities: favorites</title>
       </Helmet>

@@ -53,7 +53,6 @@ export const fetchComments = createAsyncThunk<
   }
 });
 
-// Пост коммента
 export const sendComment = createAsyncThunk<
   Comment,
   { offerId: string; review: { comment: string; rating: number } },

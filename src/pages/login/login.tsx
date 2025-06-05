@@ -1,14 +1,23 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { useState, useEffect, ChangeEvent, FormEvent, useCallback, useMemo, memo } from 'react';
+import {
+  useState,
+  useEffect,
+  ChangeEvent,
+  FormEvent,
+  useCallback,
+  useMemo,
+  memo,
+} from 'react';
 import { loginUser } from '../../store/thunk/authThunk';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { userSelectors } from '../../selectors/userSelectors';
-import { AuthorizationStatus, AppRoute } from '../../const';
+import { AuthorizationStatus, AppRoute, Cities } from '../../const';
+import { setCity } from '../../store/slices/offersSlice';
 
 type FromState = {
   from?: Location;
-}
+};
 
 const Login = memo((): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -23,8 +32,14 @@ const Login = memo((): JSX.Element => {
   const authStatus = useAppSelector(userSelectors.selectAuthStatus);
   const error = useAppSelector((state) => state.user.error);
 
-  const from = useMemo(() =>
-    (location.state as FromState)?.from?.pathname || AppRoute.Main, [location.state]
+  const from = useMemo(
+    () => (location.state as FromState)?.from?.pathname || AppRoute.Main,
+    [location.state]
+  );
+
+  const randomCity = useMemo(
+    () => Cities[Math.floor(Math.random() * Cities.length)],
+    []
   );
 
   const validatePassword = useCallback((pass: string): boolean => {
@@ -34,25 +49,42 @@ const Login = memo((): JSX.Element => {
     return hasLetter && hasDigit && !hasSpace;
   }, []);
 
-  const handleFormDataChange = useCallback((evt: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = evt.currentTarget;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    setValidationError('');
-  }, []);
+  const handleFormDataChange = useCallback(
+    (evt: ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = evt.currentTarget;
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+      setValidationError('');
+    },
+    []
+  );
 
-  const handleSubmit = useCallback((evt: FormEvent<HTMLFormElement>) => {
-    evt.preventDefault();
+  const handleSubmit = useCallback(
+    (evt: FormEvent<HTMLFormElement>) => {
+      evt.preventDefault();
 
-    if (!validatePassword(formData.password)) {
-      setValidationError('Пароль должен содержать минимум 1 букву и 1 цифру, а так же не содержать пробел');
-      return;
-    }
+      if (!validatePassword(formData.password)) {
+        setValidationError(
+          'Пароль должен содержать минимум 1 букву и 1 цифру, а так же не содержать пробел'
+        );
+        return;
+      }
 
-    dispatch(loginUser(formData));
-  }, [formData, validatePassword, dispatch]);
+      dispatch(loginUser(formData));
+    },
+    [formData, validatePassword, dispatch]
+  );
+
+  const handleRandomCityClick = useCallback(
+    (evt: React.MouseEvent) => {
+      evt.preventDefault();
+      dispatch(setCity(randomCity));
+      navigate(AppRoute.Main);
+    },
+    [randomCity, dispatch, navigate]
+  );
 
   const isAuthenticated = authStatus === AuthorizationStatus.Auth;
 
@@ -63,28 +95,28 @@ const Login = memo((): JSX.Element => {
   }, [isAuthenticated, navigate, from]);
 
   return (
-    <div className="page page--gray page--login">
+    <div className='page page--gray page--login'>
       <Helmet>
         <title>6 cities: authorization</title>
       </Helmet>
 
-      <main className="page__main page__main--login">
-        <div className="page__login-container container">
-          <section className="login">
-            <h1 className="login__title">Sign in</h1>
+      <main className='page__main page__main--login'>
+        <div className='page__login-container container'>
+          <section className='login'>
+            <h1 className='login__title'>Sign in</h1>
             <form
-              className="login__form form"
-              action="#"
-              method="post"
+              className='login__form form'
+              action='#'
+              method='post'
               onSubmit={handleSubmit}
             >
-              <div className="login__input-wrapper form__input-wrapper">
-                <label className="visually-hidden">E-mail</label>
+              <div className='login__input-wrapper form__input-wrapper'>
+                <label className='visually-hidden'>E-mail</label>
                 <input
-                  className="login__input form__input"
-                  type="email"
-                  name="email"
-                  placeholder="Email"
+                  className='login__input form__input'
+                  type='email'
+                  name='email'
+                  placeholder='Email'
                   onChange={handleFormDataChange}
                   value={formData.email}
                   required
@@ -92,7 +124,7 @@ const Login = memo((): JSX.Element => {
               </div>
               {validationError && (
                 <div
-                  className="login__error"
+                  className='login__error'
                   style={{ color: 'red', marginBottom: '10px' }}
                 >
                   {validationError}
@@ -100,36 +132,40 @@ const Login = memo((): JSX.Element => {
               )}
               {error && (
                 <div
-                  className="login__error"
+                  className='login__error'
                   style={{ color: 'red', marginBottom: '10px' }}
                 >
                   {error}
                 </div>
               )}
-              <div className="login__input-wrapper form__input-wrapper">
-                <label className="visually-hidden">Password</label>
+              <div className='login__input-wrapper form__input-wrapper'>
+                <label className='visually-hidden'>Password</label>
                 <input
-                  className="login__input form__input"
-                  type="password"
-                  name="password"
-                  placeholder="Password"
+                  className='login__input form__input'
+                  type='password'
+                  name='password'
+                  placeholder='Password'
                   onChange={handleFormDataChange}
                   value={formData.password}
                   required
                 />
               </div>
               <button
-                className="login__submit form__submit button"
-                type="submit"
+                className='login__submit form__submit button'
+                type='submit'
               >
                 Sign in
               </button>
             </form>
           </section>
-          <section className="locations locations--login locations--current">
-            <div className="locations__item">
-              <Link className="locations__item-link" to="#">
-                <span>Amsterdam</span>
+          <section className='locations locations--login locations--current'>
+            <div className='locations__item'>
+              <Link
+                className='locations__item-link'
+                to='#'
+                onClick={handleRandomCityClick}
+              >
+                <span>{randomCity}</span>
               </Link>
             </div>
           </section>

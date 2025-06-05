@@ -1,13 +1,21 @@
 import { useAppDispatch } from '../../store';
 import { toggleFavorite } from '../../utils';
 import cn from 'classnames';
-import { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo } from 'react';
+import { useAppSelector } from '../../store';
+import { AuthorizationStatus, AppRoute } from '../../const';
+import { userSelectors } from '../../selectors/userSelectors';
+import { useNavigate } from 'react-router-dom';
+
+const CARD_ICON_WIDTH = 18;
+const CARD_ICON_HEIGHT = 19;
+const OFFER_ICON_WIDTH = 31;
+const OFFER_ICON_HEIGHT = 33;
 
 type FavoriteButtonProps = {
   isCard: boolean;
   id: string;
   isFavorite: boolean;
-  disabled?: boolean;
 };
 
 const FavoriteButton = memo<FavoriteButtonProps>(
@@ -15,19 +23,20 @@ const FavoriteButton = memo<FavoriteButtonProps>(
     isCard,
     id,
     isFavorite,
-    disabled = false,
   }: FavoriteButtonProps): JSX.Element => {
     const dispatch = useAppDispatch();
-    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
+    const authorizationStatus = useAppSelector(userSelectors.selectAuthStatus);
+
+    const isAuthenticated = (authorizationStatus === AuthorizationStatus.Auth);
 
     const handleToggleFavorite = useCallback(() => {
-      if (isLoading || disabled) {
+      if (!isAuthenticated) {
+        navigate(AppRoute.Login);
         return;
       }
-      setIsLoading(true);
       toggleFavorite(dispatch, id, isFavorite);
-      setIsLoading(false);
-    }, [dispatch, id, isFavorite, isLoading, disabled]);
+    }, [dispatch, id, isFavorite, isAuthenticated, navigate]);
 
     const buttonClasses = useMemo(
       () =>
@@ -51,16 +60,18 @@ const FavoriteButton = memo<FavoriteButtonProps>(
 
     const iconSize = useMemo(
       () => ({
-        width: isCard ? 18 : 31,
-        height: isCard ? 19 : 33,
+        width: isCard ? CARD_ICON_WIDTH : OFFER_ICON_WIDTH,
+        height: isCard ? CARD_ICON_HEIGHT : OFFER_ICON_HEIGHT,
       }),
       [isCard]
     );
 
-    const isAbilityText = useMemo(
-      () => (isFavorite ? 'Remove from bookmarks' : 'Add to bookmarks'),
-      [isFavorite]
-    );
+    const isAbilityText = useMemo(() => {
+      if (!isAuthenticated) {
+        return 'Sign in to add to bookmarks';
+      }
+      return isFavorite ? 'Remove from bookmarks' : 'Add to bookmarks';
+    }, [isFavorite, isAuthenticated]);
 
     return (
       <button
@@ -68,7 +79,6 @@ const FavoriteButton = memo<FavoriteButtonProps>(
         className={buttonClasses}
         type="button"
         onClick={handleToggleFavorite}
-        disabled={isLoading || disabled}
         title={isAbilityText}
       >
         <svg

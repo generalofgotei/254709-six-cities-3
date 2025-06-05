@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './components/app/app';
 import { Provider } from 'react-redux';
-import { store } from './store'; // при этом импорте происходит инциализация стора, выполняется конфигуреСтор и редьюсер. Автодиспатч, стор с нач состоянием
+import { store } from './store';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

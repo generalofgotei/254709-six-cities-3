@@ -2,13 +2,13 @@ import {useRef, useEffect} from 'react';
 import leaflet from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import useMap from './useMap.ts';
-import type { OfferType, OffersType } from '../../types/offers';
+import type { OfferType, OfferDetailType, OffersType } from '../../types/offers';
 import { URL_MARKER_CURRENT, URL_MARKER_DEFAULT } from '../../const.ts';
 
 type MapProps = {
   className?: string;
   offers: OffersType;
-  activeOffer?: OfferType | null;
+  activeOffer?: OfferType | OfferDetailType | null;
 }
 
 function Map({className, offers, activeOffer}: MapProps): JSX.Element {
@@ -29,7 +29,7 @@ function Map({className, offers, activeOffer}: MapProps): JSX.Element {
   });
 
   useEffect(() => {
-    if (map) {
+    if (map && offers.length > 0) {
       map.eachLayer((layer) => {
         if (layer instanceof leaflet.Marker) {
           map.removeLayer(layer);
@@ -51,7 +51,7 @@ function Map({className, offers, activeOffer}: MapProps): JSX.Element {
           .addTo(map);
       });
     }
-  }, [map, offers, activeOffer]);
+  }, [map, offers, activeOffer, currentCustomIcon, defaultCustomIcon]);
 
   return (
     <section

@@ -52,7 +52,6 @@ export const offersSlice = createSlice({
         state.status = RequestStatus.failed;
         state.error = action.error.message || 'Loading favorite offers error';
       })
-      // Toggle favorite status
       .addCase(toggleFavoriteStatus.fulfilled, (state, action) => {
         const { offer, isFavorite } = action.payload;
         const offerIndex = state.offers.findIndex((item) => item.id === offer.id);
@@ -71,7 +70,6 @@ export const offersSlice = createSlice({
   },
 });
 
-// Экспортируем экшены
 export const { setCity, initOffers } = offersSlice.actions;
 
 export default offersSlice.reducer;

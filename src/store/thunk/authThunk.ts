@@ -4,7 +4,6 @@ import type { LoginType, UserData } from '../../types/user';
 import { getToken, saveToken, dropToken } from '../../services/token';
 import { Endpoint } from '../../const';
 
-// Проверка авторизации при старте приложения
 export const checkAuthStatus = createAsyncThunk<UserData, undefined, { extra: AxiosInstance }>(
   'user/checkStatus',
   async (_arg, { extra: api }) => {
@@ -24,14 +23,12 @@ export const checkAuthStatus = createAsyncThunk<UserData, undefined, { extra: Ax
   }
 );
 
-// Логин пользователя
 export const loginUser = createAsyncThunk<UserData, LoginType, { extra: AxiosInstance }>(
   'user/login',
   async ({ email, password }, { extra: api }) => {
     try {
       const response = await api.post<UserData>(Endpoint.Login, { email, password });
 
-      // Сохраняем токен
       saveToken(response.data.token);
 
       return response.data;
@@ -41,7 +38,6 @@ export const loginUser = createAsyncThunk<UserData, LoginType, { extra: AxiosIns
   }
 );
 
-// Выход пользователя
 export const logoutUser = createAsyncThunk<void, undefined, { extra: AxiosInstance }>(
   'user/logout',
   async (_arg, { extra: api }) => {

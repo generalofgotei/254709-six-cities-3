@@ -9,6 +9,8 @@ import type { OfferType } from '../../types/offers';
 import { offersSelectors } from '../../selectors/offersSelectors';
 import { RequestStatus } from '../../const';
 import Spinner from '../../components/spinner/spinner';
+import { MainEmpty } from '../../components/main-empty/main-empty';
+import cn from 'classnames';
 
 const Main = memo((): JSX.Element => {
   const [activeOffer, setActiveOffer] = useState<Nullable<OfferType>>(null);
@@ -21,8 +23,9 @@ const Main = memo((): JSX.Element => {
   const activeCity = useAppSelector(offersSelectors.selectCity);
   const allOffers = useAppSelector(offersSelectors.selectOffers);
 
-  const activeOffers = useMemo(() =>
-    allOffers.filter((offer) => offer.city.name === activeCity), [allOffers, activeCity]
+  const activeOffers = useMemo(
+    () => allOffers.filter((offer) => offer.city.name === activeCity),
+    [allOffers, activeCity]
   );
 
   const isLoading = status === RequestStatus.loading;
@@ -32,7 +35,11 @@ const Main = memo((): JSX.Element => {
   }
 
   return (
-    <div className="page page--gray page--main">
+    <div
+      className={cn('page page--gray page--main', {
+        'page__main--index-empty': activeOffers.length === 0,
+      })}
+    >
       <Helmet>
         <title>6 cities</title>
       </Helmet>
@@ -41,14 +48,10 @@ const Main = memo((): JSX.Element => {
         <h1 className="visually-hidden">Cities</h1>
 
         <NavItem />
-
         <div className="cities">
-          <div className="cities__places-container container">
-            <OfferSection
-              onActiveOfferChange={handleActiveOfferChange}
-            />
-
-            <div className="cities__right-section">
+          {activeOffers.length !== 0 && (
+            <div className="cities__places-container container">
+              <OfferSection onActiveOfferChange={handleActiveOfferChange} />
               <div className="cities__right-section">
                 <Map
                   className="cities__map"
@@ -57,7 +60,8 @@ const Main = memo((): JSX.Element => {
                 />
               </div>
             </div>
-          </div>
+          )}
+          {activeOffers.length === 0 && <MainEmpty />}
         </div>
       </main>
     </div>

@@ -2,12 +2,14 @@ import { Link } from 'react-router-dom';
 import { AppRoute } from '../../const';
 import { calculateRating } from '../../utils';
 import type { OfferType } from '../../types/offers';
-import { useAppSelector } from '../../store';
-import { AuthorizationStatus } from '../../const';
-import { userSelectors } from '../../selectors/userSelectors';
 import cn from 'classnames';
 import FavoriteButton from '../favorite-button/favorite-button';
 import { memo, useMemo, useCallback } from 'react';
+
+const FAVORITE_IMAGE_WIDTH = 150;
+const FAVORITE_IMAGE_HEIGHT = 110;
+const OFFER_IMAGE_WIDTH = 260;
+const OFFER_IMAGE_HEIGHT = 200;
 
 type CardProps = {
   offer: OfferType;
@@ -27,8 +29,6 @@ const Card = memo<CardProps>(
       title,
       type,
     } = offer;
-
-    const authorizationStatus = useAppSelector(userSelectors.selectAuthStatus);
 
     const handleMouseOn = useCallback(() => {
       handleHover?.(offer);
@@ -63,8 +63,8 @@ const Card = memo<CardProps>(
 
     const imageSize = useMemo(
       () => ({
-        width: isFavoritePage ? 150 : 260,
-        height: isFavoritePage ? 110 : 200,
+        width: isFavoritePage ? FAVORITE_IMAGE_WIDTH : OFFER_IMAGE_WIDTH,
+        height: isFavoritePage ? FAVORITE_IMAGE_HEIGHT : OFFER_IMAGE_HEIGHT,
       }),
       [isFavoritePage]
     );
@@ -76,8 +76,6 @@ const Card = memo<CardProps>(
     );
 
     const offerLink = useMemo(() => `${AppRoute.Offer}/${id}`, [id]);
-
-    const isAuthenticated = authorizationStatus === AuthorizationStatus.Auth;
 
     const formattedPrice = useMemo(() => `€${price}`, [price]);
 
@@ -111,14 +109,7 @@ const Card = memo<CardProps>(
               <b className="place-card__price-value">{formattedPrice}</b>
               <span className="place-card__price-text">&#47;&nbsp;night</span>
             </div>
-            {isAuthenticated && (
-              <FavoriteButton
-                isCard
-                id={id}
-                isFavorite={isFavorite}
-                disabled={false}
-              />
-            )}
+            <FavoriteButton isCard id={id} isFavorite={isFavorite} />
           </div>
 
           <div className="place-card__rating rating">

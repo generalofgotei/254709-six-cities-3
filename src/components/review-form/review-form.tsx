@@ -1,11 +1,17 @@
-import { ReactEventHandler, useState, Fragment, FormEvent } from 'react';
+import {
+  ReactEventHandler,
+  useState,
+  Fragment,
+  FormEvent,
+  useCallback,
+} from 'react';
 import { rating } from '../../const';
 import { sendComment } from '../../store/thunk/offerDetailThunk';
 import { useAppDispatch } from '../../store';
 import { useParams } from 'react-router-dom';
-import { MIN_COMMENT_LENGTH } from '../../const';
+import { MIN_COMMENT_LENGTH, MAX_COMMENT_LENGTH } from '../../const';
 
-type handleChangeType = ReactEventHandler<
+type HandleChangeType = ReactEventHandler<
   HTMLInputElement | HTMLTextAreaElement
 >;
 
@@ -13,20 +19,44 @@ const ReviewForm = (): JSX.Element => {
   const { id: offerId } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
   const [review, setReview] = useState({ rating: 0, comment: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange: handleChangeType = (evt) => {
+  const handleChange: HandleChangeType = useCallback((evt) => {
     const { name, value } = evt.currentTarget;
-    setReview({ ...review, [name]: name === 'rating' ? Number(value) : value});
-  };
+    setReview((prev) => ({
+      ...prev,
+      [name]: name === 'rating' ? Number(value) : value,
+    }));
+  }, []);
 
-  const handleSubmitComment = (evt: FormEvent<HTMLFormElement>) => {
-    evt.preventDefault();
-    if (!offerId) {
-      throw new Error('ID didnt find');
-    }
-    dispatch(sendComment({ offerId, review }));
-    setReview({ rating: 0, comment: '' });
-  };
+  const handleSubmitComment = useCallback(
+    (evt: FormEvent<HTMLFormElement>) => {
+      evt.preventDefault();
+
+      if (!offerId) {
+        return;
+      }
+
+      setIsSubmitting(true);
+
+      dispatch(sendComment({ offerId, review }))
+        .unwrap()
+        .then(() => {
+          setReview({ rating: 0, comment: '' });
+        })
+        .finally(() => {
+          setIsSubmitting(false);
+        });
+    },
+    [dispatch, offerId, review]
+  );
+
+  const isFormDisabled =
+    review.comment.length < MIN_COMMENT_LENGTH ||
+    review.comment.length > MAX_COMMENT_LENGTH ||
+    review.rating === 0 ||
+    isSubmitting;
+
   return (
     <form
       className="reviews__form form"
@@ -37,6 +67,7 @@ const ReviewForm = (): JSX.Element => {
       <label className="reviews__label form__label" htmlFor="review">
         Your review
       </label>
+
       <div className="reviews__rating-form form__rating">
         {rating.map(({ value, label }) => (
           <Fragment key={value}>
@@ -47,6 +78,8 @@ const ReviewForm = (): JSX.Element => {
               id={`${value}-stars`}
               type="radio"
               onChange={handleChange}
+              checked={review.rating === value}
+              disabled={isSubmitting}
             />
             <label
               htmlFor={`${value}-stars`}
@@ -68,17 +101,23 @@ const ReviewForm = (): JSX.Element => {
         placeholder="Tell how was your stay, what you like and what can be improved"
         onChange={handleChange}
         value={review.comment}
+        disabled={isSubmitting}
       />
+
       <div className="reviews__button-wrapper">
         <p className="reviews__help">
           To submit review please make sure to set{' '}
           <span className="reviews__star">rating</span> and describe your stay
-          with at least <b className="reviews__text-amount">50 characters</b>.
+          with at least{' '}
+          <b className="reviews__text-amount">
+            {MIN_COMMENT_LENGTH} characters
+          </b>
+          .
         </p>
         <button
           className="reviews__submit form__submit button"
           type="submit"
-          disabled={review.comment.length < MIN_COMMENT_LENGTH || review.rating === 0}
+          disabled={isFormDisabled}
         >
           Submit
         </button>

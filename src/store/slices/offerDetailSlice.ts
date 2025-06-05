@@ -24,7 +24,6 @@ export const offerDetailSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Fetch offer detail
       .addCase(fetchOfferDetail.pending, (state) => {
         state.status = RequestStatus.loading;
         state.error = null;
@@ -38,7 +37,6 @@ export const offerDetailSlice = createSlice({
         state.status = RequestStatus.failed;
         state.error = action.error.message || 'Error loading offer details';
       })
-      // Fetch nearby offers
       .addCase(fetchNearbyOffers.pending, (state) => {
         state.error = null;
       })
@@ -49,7 +47,6 @@ export const offerDetailSlice = createSlice({
       .addCase(fetchNearbyOffers.rejected, (state, action) => {
         state.error = action.error.message || 'Error loading nearby offers';
       })
-      // Fetch comments
       .addCase(fetchComments.pending, (state) => {
         state.error = null;
       })
@@ -60,7 +57,6 @@ export const offerDetailSlice = createSlice({
       .addCase(fetchComments.rejected, (state, action) => {
         state.error = action.error.message || 'Error loading comments';
       })
-      // Post comment
       .addCase(sendComment.pending, (state) => {
         state.error = null;
       })
