@@ -6,6 +6,11 @@ import cn from 'classnames';
 import FavoriteButton from '../favorite-button/favorite-button';
 import { memo, useMemo, useCallback } from 'react';
 
+const FAVORITE_IMAGE_WIDTH = 150;
+const FAVORITE_IMAGE_HEIGHT = 110;
+const OFFER_IMAGE_WIDTH = 260;
+const OFFER_IMAGE_HEIGHT = 200;
+
 type CardProps = {
   offer: OfferType;
   handleHover?: (offer?: OfferType) => void;
@@ -58,8 +63,8 @@ const Card = memo<CardProps>(
 
     const imageSize = useMemo(
       () => ({
-        width: isFavoritePage ? 150 : 260,
-        height: isFavoritePage ? 110 : 200,
+        width: isFavoritePage ? FAVORITE_IMAGE_WIDTH : OFFER_IMAGE_WIDTH,
+        height: isFavoritePage ? FAVORITE_IMAGE_HEIGHT : OFFER_IMAGE_HEIGHT,
       }),
       [isFavoritePage]
     );

@@ -7,6 +7,11 @@ import { AuthorizationStatus, AppRoute } from '../../const';
 import { userSelectors } from '../../selectors/userSelectors';
 import { useNavigate } from 'react-router-dom';
 
+const CARD_ICON_WIDTH = 18;
+const CARD_ICON_HEIGHT = 19;
+const OFFER_ICON_WIDTH = 31;
+const OFFER_ICON_HEIGHT = 33;
+
 type FavoriteButtonProps = {
   isCard: boolean;
   id: string;
@@ -55,8 +60,8 @@ const FavoriteButton = memo<FavoriteButtonProps>(
 
     const iconSize = useMemo(
       () => ({
-        width: isCard ? 18 : 31,
-        height: isCard ? 19 : 33,
+        width: isCard ? CARD_ICON_WIDTH : OFFER_ICON_WIDTH,
+        height: isCard ? CARD_ICON_HEIGHT : OFFER_ICON_HEIGHT,
       }),
       [isCard]
     );

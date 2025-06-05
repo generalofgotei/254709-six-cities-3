@@ -2,6 +2,8 @@ import { ReviewType } from '../../types/reviews';
 import { calculateRating, getHumanDate } from '../../utils';
 import { memo, useMemo } from 'react';
 
+const AVATAR_SIZE = 54;
+
 type ReviewItemProps = {
   review: ReviewType;
 };
@@ -19,8 +21,8 @@ const ReviewItem = memo<ReviewItemProps>(({ review }: ReviewItemProps): JSX.Elem
           <img
             className="reviews__avatar user__avatar"
             src={user.avatarUrl}
-            width={54}
-            height={54}
+            width={AVATAR_SIZE}
+            height={AVATAR_SIZE}
             alt="Reviews avatar"
           />
         </div>
