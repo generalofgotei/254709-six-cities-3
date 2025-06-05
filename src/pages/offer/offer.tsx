@@ -5,9 +5,9 @@ import type { OfferType } from '../../types/offers';
 import { calculateRating } from '../../utils';
 import Map from '../../components/map/map';
 import NearPlaces from '../../components/near-places/near-places';
-import { Nullable } from 'vitest';
+
 import { useAppSelector, useAppDispatch } from '../../store';
-import { useState, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { offerDetailSelectors } from '../../selectors/offerDetailSelectors';
 import {
   fetchOfferDetail,
@@ -17,15 +17,11 @@ import {
 import { RequestStatus } from '../../const';
 import Spinner from '../../components/spinner/spinner';
 import FavoriteButton from '../../components/favorite-button/favorite-button';
+import cn from 'classnames';
 
 const MAX_NEARBY_OFFERS_ON_MAP = 3;
 
 const Offer = () => {
-  const [activeOffer, setActiveOffer] = useState<Nullable<OfferType>>(null);
-  const handleActiveOfferChange = (offer?: OfferType) => {
-    setActiveOffer(offer || null);
-  };
-
   const { id } = useParams();
   const dispatch = useAppDispatch();
   const status = useAppSelector(offerDetailSelectors.selectStatus);
@@ -33,7 +29,9 @@ const Offer = () => {
   const comments = useAppSelector(offerDetailSelectors.selectComments);
   const nearbyOffers = useAppSelector(offerDetailSelectors.selectNearbyOffers);
 
-  const limitedNearbyOffers = useMemo(() => nearbyOffers.slice(0, MAX_NEARBY_OFFERS_ON_MAP), [nearbyOffers]
+  const limitedNearbyOffers = useMemo(
+    () => nearbyOffers.slice(0, MAX_NEARBY_OFFERS_ON_MAP),
+    [nearbyOffers]
   );
 
   const mapOffers = useMemo(() => {
@@ -109,7 +107,11 @@ const Offer = () => {
               <div className="offer__name-wrapper">
                 <h1 className="offer__name">{title}</h1>
                 {id && (
-                  <FavoriteButton isCard={false} id={id} isFavorite={isFavorite}/>
+                  <FavoriteButton
+                    isCard={false}
+                    id={id}
+                    isFavorite={isFavorite}
+                  />
                 )}
               </div>
               <div className="offer__rating rating">
@@ -149,7 +151,12 @@ const Offer = () => {
               <div className="offer__host">
                 <h2 className="offer__host-title">Meet the host</h2>
                 <div className="offer__host-user user">
-                  <div className="offer__avatar-wrapper offer__avatar-wrapper--pro user__avatar-wrapper">
+                  <div
+                    className={cn(
+                      'offer__avatar-wrapper user__avatar-wrapper',
+                      { 'offer__avatar-wrapper--pro': host.isPro }
+                    )}
+                  >
                     <img
                       className="offer__avatar user__avatar"
                       src={host.avatarUrl}
@@ -159,7 +166,9 @@ const Offer = () => {
                     />
                   </div>
                   <span className="offer__user-name">{host.name}</span>
-                  <span className="offer__user-status">{host.isPro}</span>
+                  {host.isPro && (
+                    <span className="offer__user-status">Pro</span>
+                  )}
                 </div>
                 <div className="offer__description">
                   <p className="offer__text">{description}</p>
@@ -172,14 +181,11 @@ const Offer = () => {
           <Map
             className="offer__map"
             offers={mapOffers}
-            activeOffer={activeOffer}
+            activeOffer={currentOffer}
           />
         </section>
         <div className="container">
-          <NearPlaces
-            offers={limitedNearbyOffers}
-            onActiveOfferChange={handleActiveOfferChange}
-          />
+          <NearPlaces offers={limitedNearbyOffers} />
         </div>
       </main>
     </div>
