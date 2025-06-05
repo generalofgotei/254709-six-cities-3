@@ -16,8 +16,6 @@ import {
 } from '../../store/thunk/offerDetailThunk';
 import { RequestStatus } from '../../const';
 import Spinner from '../../components/spinner/spinner';
-import { userSelectors } from '../../selectors/userSelectors';
-import { AuthorizationStatus } from '../../const';
 import FavoriteButton from '../../components/favorite-button/favorite-button';
 
 const Offer = () => {
@@ -29,7 +27,6 @@ const Offer = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
   const status = useAppSelector(offerDetailSelectors.selectStatus);
-  const authorizationStatus = useAppSelector(userSelectors.selectAuthStatus);
   const currentOffer = useAppSelector(offerDetailSelectors.selectOffer);
   const comments = useAppSelector(offerDetailSelectors.selectComments);
   const nearbyOffers = useAppSelector(offerDetailSelectors.selectNearbyOffers);
@@ -87,7 +84,7 @@ const Offer = () => {
               )}
               <div className="offer__name-wrapper">
                 <h1 className="offer__name">{title}</h1>
-                {authorizationStatus === AuthorizationStatus.Auth && id && isFavorite && (
+                {id && isFavorite && (
                   <FavoriteButton isCard={false} id={id} isFavorite={isFavorite}/>
                 )}
               </div>
