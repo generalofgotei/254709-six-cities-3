@@ -15,10 +15,11 @@ type CardProps = {
   offer: OfferType;
   handleHover?: (offer?: OfferType) => void;
   isFavoritePage?: boolean;
+  isNearbyPage?: boolean;
 };
 
 const Card = memo<CardProps>(
-  ({ offer, handleHover, isFavoritePage = false }: CardProps): JSX.Element => {
+  ({ offer, handleHover, isFavoritePage = false, isNearbyPage = false }: CardProps): JSX.Element => {
     const {
       isFavorite,
       id,
@@ -42,7 +43,8 @@ const Card = memo<CardProps>(
       () =>
         cn('place-card', {
           'favorites__card': isFavoritePage,
-          'cities__card': !isFavoritePage,
+          'near-places__card': isNearbyPage,
+          'cities__card': !isFavoritePage && !isNearbyPage,
         }),
       [isFavoritePage]
     );
@@ -51,7 +53,9 @@ const Card = memo<CardProps>(
       () =>
         cn('place-card__image-wrapper', {
           'favorites__image-wrapper': isFavoritePage,
-          'cities__image-wrapper': !isFavoritePage,
+          'near-places__image-wrapper': isNearbyPage,
+          'cities__image-wrapper': !isFavoritePage && !isNearbyPage,
+
         }),
       [isFavoritePage]
     );

@@ -12,6 +12,7 @@ const NearPlaces = ({offers}: NearPlacesProps): JSX.Element => {
       <Card
         key={offer.id}
         offer={offer}
+        isNearbyPage
       />
     )), [offers]
   );

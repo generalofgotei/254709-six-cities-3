@@ -1,6 +1,7 @@
+
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
-import { AppRoute } from '../../const';
+import { AppRoute, AuthorizationStatus } from '../../const';
 import Layout from '../layout/layout';
 import Main from '../../pages/main/main';
 import Login from '../../pages/login/login';
@@ -13,19 +14,27 @@ import { useAppDispatch, useAppSelector } from '../../store';
 import { RequestStatus } from '../../const';
 import { useEffect } from 'react';
 import { offersSelectors } from '../../selectors/offersSelectors';
+import { userSelectors } from '../../selectors/userSelectors';
 import { checkAuthStatus } from '../../store/thunk/authThunk';
 
 const App = (): JSX.Element => {
   const dispatch = useAppDispatch();
   const status = useAppSelector(offersSelectors.selectStatus);
+  const authStatus = useAppSelector(userSelectors.selectAuthStatus);
 
   useEffect(() => {
     dispatch(checkAuthStatus());
     if (status === RequestStatus.idle) {
       dispatch(fetchAllOffers());
-      dispatch(fetchFavoriteOffers());
     }
   }, [dispatch, status]);
+
+  useEffect(() => {
+    if (authStatus === AuthorizationStatus.Auth) {
+      dispatch(fetchFavoriteOffers());
+    }
+  }, [dispatch, authStatus]);
+
   return (
     <HelmetProvider>
       <BrowserRouter>

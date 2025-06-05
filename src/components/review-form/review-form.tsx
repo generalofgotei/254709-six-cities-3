@@ -29,27 +29,24 @@ const ReviewForm = (): JSX.Element => {
     }));
   }, []);
 
-  const handleSubmitComment = useCallback(
-    (evt: FormEvent<HTMLFormElement>) => {
-      evt.preventDefault();
+  const handleSubmitComment = async (evt: FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
 
-      if (!offerId) {
-        return;
-      }
+    if (!offerId) {
+      return;
+    }
 
-      setIsSubmitting(true);
+    setIsSubmitting(true);
 
-      dispatch(sendComment({ offerId, review }))
-        .unwrap()
-        .then(() => {
-          setReview({ rating: 0, comment: '' });
-        })
-        .finally(() => {
-          setIsSubmitting(false);
-        });
-    },
-    [dispatch, offerId, review]
-  );
+    try {
+      await dispatch(sendComment({ offerId, review })).unwrap();
+      setReview({ rating: 0, comment: '' });
+    } catch (error) {
+      throw new Error('Error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const isFormDisabled =
     review.comment.length < MIN_COMMENT_LENGTH ||
@@ -62,7 +59,9 @@ const ReviewForm = (): JSX.Element => {
       className="reviews__form form"
       action="#"
       method="post"
-      onSubmit={handleSubmitComment}
+      onSubmit={(evt) => {
+        handleSubmitComment(evt);
+      }}
     >
       <label className="reviews__label form__label" htmlFor="review">
         Your review

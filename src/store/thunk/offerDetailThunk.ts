@@ -53,11 +53,12 @@ export const fetchComments = createAsyncThunk<
   }
 });
 
+
 export const sendComment = createAsyncThunk<
   Comment,
   { offerId: string; review: { comment: string; rating: number } },
-  { extra: AxiosInstance }
->('offerDetail/postComment', async ({ offerId, review }, { extra: api }) => {
+  { extra: AxiosInstance; rejectValue: string }
+>('offerDetail/postComment', async ({ offerId, review }, { extra: api, rejectWithValue }) => {
   try {
     const response = await api.post<Comment>(
       `${Endpoint.Comments}/${offerId}`,
@@ -65,6 +66,6 @@ export const sendComment = createAsyncThunk<
     );
     return response.data;
   } catch (error) {
-    throw new Error('Error posting comment');
+    return rejectWithValue('Error posting comment');
   }
 });
