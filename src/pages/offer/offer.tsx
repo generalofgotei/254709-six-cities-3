@@ -7,7 +7,7 @@ import Map from '../../components/map/map';
 import NearPlaces from '../../components/near-places/near-places';
 import { Nullable } from 'vitest';
 import { useAppSelector, useAppDispatch } from '../../store';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { offerDetailSelectors } from '../../selectors/offerDetailSelectors';
 import {
   fetchOfferDetail,
@@ -17,6 +17,8 @@ import {
 import { RequestStatus } from '../../const';
 import Spinner from '../../components/spinner/spinner';
 import FavoriteButton from '../../components/favorite-button/favorite-button';
+
+const MAX_NEARBY_OFFERS_ON_MAP = 3;
 
 const Offer = () => {
   const [activeOffer, setActiveOffer] = useState<Nullable<OfferType>>(null);
@@ -30,6 +32,28 @@ const Offer = () => {
   const currentOffer = useAppSelector(offerDetailSelectors.selectOffer);
   const comments = useAppSelector(offerDetailSelectors.selectComments);
   const nearbyOffers = useAppSelector(offerDetailSelectors.selectNearbyOffers);
+
+  const limitedNearbyOffers = useMemo(() => nearbyOffers.slice(0, MAX_NEARBY_OFFERS_ON_MAP), [nearbyOffers]
+  );
+
+  const mapOffers = useMemo(() => {
+    if (!currentOffer) {
+      return limitedNearbyOffers;
+    }
+    const currentOfferForMap: OfferType = {
+      id: currentOffer.id,
+      title: currentOffer.title,
+      type: currentOffer.type,
+      price: currentOffer.price,
+      previewImage: currentOffer.images[0] || '',
+      city: currentOffer.city,
+      location: currentOffer.location,
+      isFavorite: currentOffer.isFavorite,
+      isPremium: currentOffer.isPremium,
+      rating: currentOffer.rating,
+    };
+    return [currentOfferForMap, ...limitedNearbyOffers];
+  }, [currentOffer, limitedNearbyOffers]);
 
   useEffect(() => {
     dispatch(fetchOfferDetail(id as string));
@@ -64,7 +88,7 @@ const Offer = () => {
         <section className="offer">
           <div className="offer__gallery-container container">
             <div className="offer__gallery">
-              {images.map((image) => (
+              {images.slice(0, 6).map((image) => (
                 <div key={image} className="offer__image-wrapper">
                   <img
                     className="offer__image"
@@ -84,7 +108,7 @@ const Offer = () => {
               )}
               <div className="offer__name-wrapper">
                 <h1 className="offer__name">{title}</h1>
-                {id && isFavorite && (
+                {id && (
                   <FavoriteButton isCard={false} id={id} isFavorite={isFavorite}/>
                 )}
               </div>
@@ -102,10 +126,10 @@ const Offer = () => {
                   {type}
                 </li>
                 <li className="offer__feature offer__feature--bedrooms">
-                  {bedrooms} Bedrooms
+                  {bedrooms} {bedrooms === 1 ? 'Bedroom' : 'Bedrooms'}
                 </li>
                 <li className="offer__feature offer__feature--adults">
-                  Max {maxAdults} adults
+                  Max {maxAdults} {maxAdults === 1 ? 'adult' : 'adults'}
                 </li>
               </ul>
               <div className="offer__price">
@@ -147,13 +171,13 @@ const Offer = () => {
           </div>
           <Map
             className="offer__map"
-            offers={nearbyOffers}
+            offers={mapOffers}
             activeOffer={activeOffer}
           />
         </section>
         <div className="container">
           <NearPlaces
-            offers={nearbyOffers}
+            offers={limitedNearbyOffers}
             onActiveOfferChange={handleActiveOfferChange}
           />
         </div>

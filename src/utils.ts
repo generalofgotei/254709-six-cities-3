@@ -2,7 +2,7 @@ import { AppDispatch } from './types/store';
 import { toggleFavoriteStatus } from './store/thunk/offersThunk';
 
 export const calculateRating = (rating: number): string =>
-  `${(rating / 5) * 100}%`;
+  `${Math.round((rating / 5) * 100)}%`;
 
 export const getHumanDate = (isoDate: string) => {
   const date = new Date(isoDate);
