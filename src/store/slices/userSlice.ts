@@ -22,7 +22,6 @@ export const userSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Проверка статуса авторизации
       .addCase(checkAuthStatus.fulfilled, (state, action) => {
         state.authorizationStatus = AuthorizationStatus.Auth;
         state.email = action.payload.email;
@@ -33,8 +32,6 @@ export const userSlice = createSlice({
         clearAuth(state, AuthorizationStatus.NoAuth);
         state.error = null;
       })
-
-      // Логин
       .addCase(loginUser.fulfilled, (state, action) => {
         state.authorizationStatus = AuthorizationStatus.Auth;
         state.email = action.payload.email;
@@ -45,8 +42,6 @@ export const userSlice = createSlice({
         clearAuth(state, AuthorizationStatus.NoAuth);
         state.error = action.error.message || 'Login failed';
       })
-
-      // Выход
       .addCase(logoutUser.fulfilled, (state) => {
         clearAuth(state, AuthorizationStatus.NoAuth);
         state.error = null;

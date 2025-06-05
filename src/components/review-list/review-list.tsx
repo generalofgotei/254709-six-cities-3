@@ -15,7 +15,6 @@ const MAX_REVIEWS_COUNT = 10;
 const ReviewList = ({ reviews }: ReviewListProps): JSX.Element => {
   const authorizationStatus = useAppSelector(userSelectors.selectAuthStatus);
 
-  // Сортировка отзывов от новых к старым и ограничение до 10 штук
   const sortedAndLimitedReviews = useMemo(() =>
     [...reviews]
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
