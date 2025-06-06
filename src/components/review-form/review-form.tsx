@@ -20,14 +20,21 @@ const ReviewForm = (): JSX.Element => {
   const dispatch = useAppDispatch();
   const [review, setReview] = useState({ rating: 0, comment: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const handleChange: HandleChangeType = useCallback((evt) => {
-    const { name, value } = evt.currentTarget;
-    setReview((prev) => ({
-      ...prev,
-      [name]: name === 'rating' ? Number(value) : value,
-    }));
-  }, []);
+  const handleChange: HandleChangeType = useCallback(
+    (evt) => {
+      const { name, value } = evt.currentTarget;
+      setReview((prev) => ({
+        ...prev,
+        [name]: name === 'rating' ? Number(value) : value,
+      }));
+      if (submitError) {
+        setSubmitError(null);
+      }
+    },
+    [submitError]
+  );
 
   const handleSubmitComment = async (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
@@ -42,7 +49,7 @@ const ReviewForm = (): JSX.Element => {
       await dispatch(sendComment({ offerId, review })).unwrap();
       setReview({ rating: 0, comment: '' });
     } catch (error) {
-      console.error('Failed to send comment:', error);
+      setSubmitError('Post comment error');
     } finally {
       setIsSubmitting(false);
     }

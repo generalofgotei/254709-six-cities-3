@@ -46,7 +46,7 @@ const Card = memo<CardProps>(
           'near-places__card': isNearbyPage,
           'cities__card': !isFavoritePage && !isNearbyPage,
         }),
-      [isFavoritePage]
+      [isFavoritePage, isNearbyPage]
     );
 
     const imageWrapperClasses = useMemo(
@@ -57,7 +57,7 @@ const Card = memo<CardProps>(
           'cities__image-wrapper': !isFavoritePage && !isNearbyPage,
 
         }),
-      [isFavoritePage]
+      [isFavoritePage, isNearbyPage]
     );
 
     const cardInfoClasses = useMemo(
