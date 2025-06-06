@@ -1,4 +1,3 @@
-
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { AppRoute, AuthorizationStatus } from '../../const';
@@ -9,13 +8,17 @@ import Favorites from '../../pages/favorites/favorites';
 import Offer from '../../pages/offer/offer';
 import NotFound from '../../pages/not-found/not-found';
 import PrivateRoute from '../private-route/private-route';
-import { fetchAllOffers, fetchFavoriteOffers } from '../../store/thunk/offersThunk';
+import {
+  fetchAllOffers,
+  fetchFavoriteOffers,
+} from '../../store/thunk/offersThunk';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { RequestStatus } from '../../const';
 import { useEffect } from 'react';
 import { offersSelectors } from '../../selectors/offersSelectors';
 import { userSelectors } from '../../selectors/userSelectors';
 import { checkAuthStatus } from '../../store/thunk/authThunk';
+import { getToken } from '../../services/token';
 
 const App = (): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -23,11 +26,15 @@ const App = (): JSX.Element => {
   const authStatus = useAppSelector(userSelectors.selectAuthStatus);
 
   useEffect(() => {
-    dispatch(checkAuthStatus());
+    const token = getToken();
+    if (token && authStatus === AuthorizationStatus.Unknown) {
+      dispatch(checkAuthStatus());
+    }
+
     if (status === RequestStatus.idle) {
       dispatch(fetchAllOffers());
     }
-  }, [dispatch, status]);
+  }, [dispatch, status, authStatus]);
 
   useEffect(() => {
     if (authStatus === AuthorizationStatus.Auth) {
@@ -39,10 +46,7 @@ const App = (): JSX.Element => {
     <HelmetProvider>
       <BrowserRouter>
         <Routes>
-          <Route
-            path={AppRoute.Main}
-            element={<Layout />}
-          >
+          <Route path={AppRoute.Main} element={<Layout />}>
             <Route index element={<Main />} />
             <Route path={AppRoute.Login} element={<Login />} />
             <Route
@@ -53,12 +57,7 @@ const App = (): JSX.Element => {
                 </PrivateRoute>
               }
             />
-            <Route
-              path={`${AppRoute.Offer}/:id`}
-              element={
-                <Offer/>
-              }
-            />
+            <Route path={`${AppRoute.Offer}/:id`} element={<Offer />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
