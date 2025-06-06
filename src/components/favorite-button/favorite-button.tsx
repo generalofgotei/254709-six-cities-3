@@ -6,11 +6,7 @@ import { useAppSelector } from '../../store';
 import { AuthorizationStatus, AppRoute } from '../../const';
 import { userSelectors } from '../../selectors/userSelectors';
 import { useNavigate } from 'react-router-dom';
-
-const CARD_ICON_WIDTH = 18;
-const CARD_ICON_HEIGHT = 19;
-const OFFER_ICON_WIDTH = 31;
-const OFFER_ICON_HEIGHT = 33;
+import { CARD_ICON_WIDTH, CARD_ICON_HEIGHT, OFFER_ICON_WIDTH, OFFER_ICON_HEIGHT } from '../../const';
 
 type FavoriteButtonProps = {
   isCard: boolean;
