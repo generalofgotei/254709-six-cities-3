@@ -49,7 +49,7 @@ const Main = memo((): JSX.Element => {
 
         <NavItem />
         <div className="cities">
-          {activeOffers.length !== 0 && (
+          {activeOffers.length !== 0 ? (
             <div className="cities__places-container container">
               <OfferSection onActiveOfferChange={handleActiveOfferChange} />
               <div className="cities__right-section">
@@ -60,8 +60,7 @@ const Main = memo((): JSX.Element => {
                 />
               </div>
             </div>
-          )}
-          {activeOffers.length === 0 && <MainEmpty />}
+          ) : <MainEmpty />}
         </div>
       </main>
     </div>

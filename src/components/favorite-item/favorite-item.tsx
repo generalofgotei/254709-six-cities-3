@@ -22,7 +22,7 @@ export const FavoriteItem = memo<FavoriteItemProps>(({ cityName, offers }: Favor
     <li className="favorites__locations-items">
       <div className="favorites__locations locations locations--current">
         <div className="locations__item">
-          <a className="locations__item-link" href="#">
+          <a className="locations__item-link">
             <span>{cityName}</span>
           </a>
         </div>

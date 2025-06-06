@@ -21,7 +21,7 @@ export const getHumanDate = (isoDate: string) => {
   };
 };
 
-export const toggleFavorite = (
+export const toggleFavorite = async (
   dispatch: AppDispatch,
   id: string,
   isFavorite: boolean
@@ -31,7 +31,7 @@ export const toggleFavorite = (
   }
 
   const isFavoriteStatus = isFavorite ? 0 : 1;
-  dispatch(
+  await dispatch(
     toggleFavoriteStatus({
       offerId: id,
       status: isFavoriteStatus,

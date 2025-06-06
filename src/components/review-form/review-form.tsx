@@ -20,36 +20,40 @@ const ReviewForm = (): JSX.Element => {
   const dispatch = useAppDispatch();
   const [review, setReview] = useState({ rating: 0, comment: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const handleChange: HandleChangeType = useCallback((evt) => {
-    const { name, value } = evt.currentTarget;
-    setReview((prev) => ({
-      ...prev,
-      [name]: name === 'rating' ? Number(value) : value,
-    }));
-  }, []);
-
-  const handleSubmitComment = useCallback(
-    (evt: FormEvent<HTMLFormElement>) => {
-      evt.preventDefault();
-
-      if (!offerId) {
-        return;
+  const handleChange: HandleChangeType = useCallback(
+    (evt) => {
+      const { name, value } = evt.currentTarget;
+      setReview((prev) => ({
+        ...prev,
+        [name]: name === 'rating' ? Number(value) : value,
+      }));
+      if (submitError) {
+        setSubmitError(null);
       }
-
-      setIsSubmitting(true);
-
-      dispatch(sendComment({ offerId, review }))
-        .unwrap()
-        .then(() => {
-          setReview({ rating: 0, comment: '' });
-        })
-        .finally(() => {
-          setIsSubmitting(false);
-        });
     },
-    [dispatch, offerId, review]
+    [submitError]
   );
+
+  const handleSubmitComment = async (evt: FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
+
+    if (!offerId) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      await dispatch(sendComment({ offerId, review })).unwrap();
+      setReview({ rating: 0, comment: '' });
+    } catch (error) {
+      setSubmitError('Post comment error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const isFormDisabled =
     review.comment.length < MIN_COMMENT_LENGTH ||
@@ -62,7 +66,9 @@ const ReviewForm = (): JSX.Element => {
       className="reviews__form form"
       action="#"
       method="post"
-      onSubmit={handleSubmitComment}
+      onSubmit={(evt) => {
+        handleSubmitComment(evt);
+      }}
     >
       <label className="reviews__label form__label" htmlFor="review">
         Your review

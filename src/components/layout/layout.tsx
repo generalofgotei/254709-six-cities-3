@@ -21,7 +21,7 @@ const getLayoutState = (pathname: PathNameType) => {
     mainClassName = 'page page--gray page--login';
     linkClassName = 'header__logo-link';
     shouldRenderUser = false;
-  } else if (pathname === AppRoute.Offer || pathname === AppRoute.Favorites) {
+  } else if (pathname.startsWith(AppRoute.Offer) || pathname === AppRoute.Favorites) {
     mainClassName = 'page';
     linkClassName = 'header__logo-link';
   }
@@ -39,7 +39,8 @@ const Layout = (): JSX.Element => {
 
   const dispatch = useAppDispatch();
 
-  const handleLogout = useCallback(() => {
+  const handleLogout = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
     dispatch(logoutUser());
   }, [dispatch]);
 
@@ -71,7 +72,7 @@ const Layout = (): JSX.Element => {
                       <a
                         className="header__nav-link"
                         onClick={handleLogout}
-                        type="button"
+                        href="#"
                       >
                         <span className="header__signout">Sign out</span>
                       </a>
