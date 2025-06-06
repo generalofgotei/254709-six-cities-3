@@ -5,12 +5,12 @@ import { ReviewsType } from '../../types/reviews';
 import { useAppSelector } from '../../store';
 import { userSelectors } from '../../selectors/userSelectors';
 import { useMemo } from 'react';
+import { MAX_REVIEWS_COUNT } from '../../const';
+
 
 type ReviewListProps = {
   reviews: ReviewsType;
 };
-
-const MAX_REVIEWS_COUNT = 10;
 
 const ReviewList = ({ reviews }: ReviewListProps): JSX.Element => {
   const authorizationStatus = useAppSelector(userSelectors.selectAuthStatus);

@@ -5,6 +5,7 @@ import type { OfferType } from '../../types/offers';
 import { calculateRating } from '../../utils';
 import Map from '../../components/map/map';
 import NearPlaces from '../../components/near-places/near-places';
+import { MAX_NEARBY_OFFERS_ON_MAP } from '../../const';
 
 import { useAppSelector, useAppDispatch } from '../../store';
 import { useEffect, useMemo } from 'react';
@@ -18,8 +19,6 @@ import { RequestStatus } from '../../const';
 import Spinner from '../../components/spinner/spinner';
 import FavoriteButton from '../../components/favorite-button/favorite-button';
 import cn from 'classnames';
-
-const MAX_NEARBY_OFFERS_ON_MAP = 3;
 
 const Offer = () => {
   const { id } = useParams();

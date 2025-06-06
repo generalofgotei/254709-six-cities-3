@@ -58,3 +58,17 @@ export const RequestStatus = {
 
 export const MIN_COMMENT_LENGTH = 50;
 export const MAX_COMMENT_LENGTH = 300;
+
+export const FAVORITE_IMAGE_WIDTH = 150;
+export const FAVORITE_IMAGE_HEIGHT = 110;
+export const OFFER_IMAGE_WIDTH = 260;
+export const OFFER_IMAGE_HEIGHT = 200;
+
+export const CARD_ICON_WIDTH = 18;
+export const CARD_ICON_HEIGHT = 19;
+export const OFFER_ICON_WIDTH = 31;
+export const OFFER_ICON_HEIGHT = 33;
+
+export const MAX_REVIEWS_COUNT = 10;
+
+export const MAX_NEARBY_OFFERS_ON_MAP = 3;
